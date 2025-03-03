@@ -1,0 +1,82 @@
+<app-alert [(alerts)]="message"></app-alert>
+
+<!-- 按钮组 -->
+<div class="mb-3">
+  <div class="btn-group">
+    <button class="btn btn-primary" (click)="showAddForm()">
+      添加记录
+    </button>
+    <button class="btn btn-outline-secondary" 
+            (click)="getNatives()" 
+            [disabled]="saving || refreshing">
+      <i class="bi" 
+         [class.bi-arrow-clockwise]="!refreshing"
+         [class.bi-arrow-clockwise-spin]="refreshing"></i>
+      {{ refreshing ? '刷新中...' : '刷新' }}
+    </button>
+  </div>
+</div>
+
+<!-- 数据表格部分 -->
+<div class="table-responsive">
+  <table class="table table-striped table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th scope="col" class="d-none d-md-table-cell">ID</th>
+        <th scope="col">姓名</th>
+        <th scope="col" class="d-none d-sm-table-cell">性别</th>
+        <th scope="col">时间</th>
+        <th scope="col" class="d-none d-lg-table-cell">时区</th>
+        <th scope="col" class="d-none d-lg-table-cell">夏令时</th>
+        <th scope="col">城市</th>
+        <th scope="col" class="d-none d-xl-table-cell">创建时间</th>
+        <th scope="col" class="d-none d-xl-table-cell">最后更新时间</th>
+        <th scope="col">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let native of natives.data">
+        <td class="d-none d-md-table-cell">{{native.id}}</td>
+        <td>
+          <span class="edit" (click)="edit(native.id)">{{native.name}}</span>
+        </td>
+        <td class="d-none d-sm-table-cell">{{ native.gender? "男": "女" }}</td>
+        <td>
+          {{native.birth_year}}-{{native.birth_month.toString().padStart(2, "0")}}-{{native.birth_day.toString().padStart(2, "0")}} 
+          {{native.birth_hour.toString().padStart(2, "0")}}:{{native.birth_minute.toString().padStart(2, "0")}}:{{native.birth_second.toString().padStart(2, "0")}}
+        </td>
+        <td class="d-none d-lg-table-cell">
+          <ng-container *ngIf="native.time_zone_offset == 0">0时区</ng-container>
+          <ng-container *ngIf="native.time_zone_offset < 0">西{{ native.time_zone_offset * -1 }}区</ng-container>
+          <ng-container *ngIf="native.time_zone_offset > 0">东{{ native.time_zone_offset }}区</ng-container>
+        </td>
+        <td class="d-none d-lg-table-cell">{{native.is_dst? "是": "否"}}</td>
+        <td>
+          <label class="mb-0" ngbTooltip="{{native.location.is_east? '+':'-' }}{{native.location.longitude_degree}}&deg;{{native.location.longitude_minute}}'{{native.location.longitude_second}},{{native.location.is_north? '+':'-'}}{{native.location.latitude_degree}}&deg;{{native.location.latitude_minute}}'{{native.location.latitude_second}}">
+            {{native.location.name}}
+          </label>
+        </td>
+        <td class="d-none d-xl-table-cell">{{ native.created_at }}</td>
+        <td class="d-none d-xl-table-cell">{{ native.updated_at }}</td>
+        <td>
+          <button *ngIf="deleting==native.id" 
+                  class="btn btn-sm btn-danger" disabled>
+            <span class="spinner-border spinner-border-sm"></span>
+            删除中...
+          </button>
+          <button *ngIf="deleting==0" 
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="delete(native.id)">
+            删除
+          </button>
+          <button *ngIf="deleting>0 && deleting!=native.id" 
+                  class="btn btn-sm btn-outline-danger" disabled>
+            等待中...
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-page-change [page]="page" [total]="natives.total" (pageChange)="pageChange($event)"></app-page-change>

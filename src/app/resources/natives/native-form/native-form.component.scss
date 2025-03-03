@@ -1,0 +1,40 @@
+// 模态框相关
+.modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+// 卡片样式
+.card {
+  border: none;
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// 表单控件样式
+.form-control, .form-select {
+  &:focus {
+    box-shadow: none;
+    border-color: #80bdff;
+  }
+}
+
+// 输入组样式
+.input-group {
+  margin-bottom: 0.5rem;
+  
+  .form-control:not(:last-child) {
+    border-right: none;
+  }
+}
+
+// 复选框样式
+.form-check-input {
+  &:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+}
