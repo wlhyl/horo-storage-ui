@@ -141,9 +141,7 @@ export class NativesComponent implements OnInit {
     this.api
       .addHoroscope(nativeRequest)
       .subscribe({
-        next: (response) => {
-          this.getNatives();
-        },
+        next: () => {},
         error: (error) => {
           let msg = error.error.error;
           let message = '新增记录失败！';
@@ -156,6 +154,7 @@ export class NativesComponent implements OnInit {
       })
       .add(() => {
         this.saving = false;
+        this.getNatives();
       });
   }
 
@@ -200,12 +199,10 @@ export class NativesComponent implements OnInit {
     this.api
       .updateHoroscope(native.id, nativeRequest)
       .subscribe({
-        next: () => {
-          this.getNatives();
-        },
+        next: () => {},
         error: (error) => {
           let msg = error.error.error;
-          let message = '更新native失败！';
+          let message = '更新记录失败！';
           if (msg) message += msg;
           this.message.push({
             kind: AlertKind.DANGER,
@@ -215,6 +212,7 @@ export class NativesComponent implements OnInit {
       })
       .add(() => {
         this.saving = false;
+        this.getNatives();
       });
   }
 
