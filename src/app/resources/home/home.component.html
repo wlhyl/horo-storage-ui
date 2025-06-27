@@ -3,19 +3,19 @@
   <div class="container-fluid">
     <!-- 左侧占位 -->
     <div class="navbar-brand invisible">占位</div>
-    
+
     <!-- 标题居中 -->
     <span class="navbar-brand mb-0 h1 position-absolute start-50 translate-middle-x">{{title}}</span>
-    
+
     <!-- 用户信息 -->
     <div class="d-flex align-items-center">
-      <button *ngIf="!user.isAuth; else auth" 
-              class="btn btn-outline-light"
-              (click)="login()">
-        登录
-      </button>
-
-      <ng-template #auth>
+      @if (!user.isAuth) {
+        <button
+          class="btn btn-outline-light"
+          (click)="login()">
+          登录
+        </button>
+      } @else {
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-outline-light" ngbDropdownToggle>
             <i class="bi bi-person me-2"></i>{{user.user.name}}
@@ -26,7 +26,8 @@
             </button>
           </div>
         </div>
-      </ng-template>
+      }
+
     </div>
   </div>
 </nav>
@@ -36,10 +37,10 @@
   <div class="row mt-3">
     <!-- 侧边导航 -->
     <div class="col-md-2">
-      <div ngbNav #nav="ngbNav" 
-           [(activeId)]="active" 
-           class="nav-pills flex-column"
-           orientation="vertical">
+      <div ngbNav #nav="ngbNav"
+        [(activeId)]="active"
+        class="nav-pills flex-column"
+        orientation="vertical">
         <ng-container ngbNavItem="natives">
           <button ngbNavLink [routerLink]="path.Native">
             <i class="bi bi-journal-text me-2"></i>记录

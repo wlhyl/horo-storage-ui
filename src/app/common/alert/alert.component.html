@@ -1,3 +1,5 @@
-<p *ngFor="let alert of alerts">
+@for (alert of alerts; track alert) {
+  <p>
     <ngb-alert [type]="alert.kind" (closed)="close(alert)">{{ alert.message }}</ngb-alert>
-</p>
+  </p>
+}
