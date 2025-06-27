@@ -1,4 +1,4 @@
-FROM node:20.18.0 as build
+FROM node:22.17.0 as build
 WORKDIR /app
 COPY ./ /app/
 
@@ -8,7 +8,7 @@ RUN npx ng build --deploy-url /horo-admin/
 
 RUN gzip /app/dist/horo_storage/browser/*js && gzip /app/dist/horo_storage/browser/*css #  && gzip /app/dist/horo_storage/browser/*html
 
-FROM nginx:1.27-alpine
+FROM nginx:1.29-alpine
 
 #COPY --from=build /app/dist/horo_storage/browser/index.html /usr/share/nginx/html/index.html
 COPY --from=build /app/dist/horo_storage/browser /usr/share/nginx/html/horo-admin
