@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- 改进用户状态管理和token处理逻辑，避免horo-ui注销后horo-storage-ui仍然是登录状态。
+
 ## [0.1.0] - 2025-06-28
 
 ### Changed
