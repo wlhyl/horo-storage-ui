@@ -6,16 +6,10 @@ import { UserComponent } from './user/user.component';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    children: [
-      { path: Path.Native, component: NativesComponent },
-      { path: Path.User, component: UserComponent },
-    ],
-  },
-
-  { path: '**', redirectTo: Path.Native },
+  { path: Path.Home, component: HomeComponent },
+  { path: Path.Native, component: NativesComponent },
+  { path: Path.User, component: UserComponent },
+  { path: '**', redirectTo: Path.Home },
 ];
 
 @NgModule({

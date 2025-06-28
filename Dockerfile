@@ -4,7 +4,7 @@ COPY ./ /app/
 
 RUN npm install --registry https://registry.npm.taobao.org
 #RUN npm run build
-RUN npx ng build --deploy-url /horo-admin/
+RUN npx ng build --base-href /horo-admin --deploy-url /horo-admin/
 
 RUN gzip /app/dist/horo_storage/browser/*js && gzip /app/dist/horo_storage/browser/*css #  && gzip /app/dist/horo_storage/browser/*html
 

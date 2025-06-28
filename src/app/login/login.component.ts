@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     this.auth.auth(this.name, this.password).subscribe({
       next: () => {
         if (this.canGoBack) this.location.back();
-        else this.router.navigateByUrl(`${Path.Root}/${Path.Resource}`);
+        else this.router.navigateByUrl(`${Path.Resource}`);
       },
       error: (error) => (this.authError = '登录失败'),
     });

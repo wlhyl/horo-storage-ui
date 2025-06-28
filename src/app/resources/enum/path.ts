@@ -1,4 +1,5 @@
 export enum Path {
-    Native = 'natives',
-    User = 'user',
-  }
+  Home = 'home',
+  Native = 'natives',
+  User = 'user',
+}

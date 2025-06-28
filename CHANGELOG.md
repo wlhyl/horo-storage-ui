@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 升级到Angular 20
 - 升级Dockerfile中的node、nginx镜像版本
+- Dockerfile 构建angular项目时，指定base-href
+- 改进页面UI
 
 ### Fixed
 - 修复添加/更新记录后页面数据不刷新的问题
