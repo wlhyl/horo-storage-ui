@@ -18,7 +18,7 @@
       } @else {
         <div ngbDropdown class="d-inline-block">
           <button class="btn btn-outline-light" ngbDropdownToggle>
-            <i class="bi bi-person me-2"></i>{{user.user.name}}
+            <i class="bi bi-person me-2"></i>{{user.user?.name}}
           </button>
           <div ngbDropdownMenu>
             <button ngbDropdownItem (click)="logout()">

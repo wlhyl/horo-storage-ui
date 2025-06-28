@@ -7,21 +7,16 @@ import { AlertKind } from '../../enum/alert';
 import { UpdateUserRequest } from '../../interfaces/user';
 
 @Component({
-    selector: 'app-user',
-    templateUrl: './user.component.html',
-    styleUrl: './user.component.scss',
-    standalone: false
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrl: './user.component.scss',
+  standalone: false,
 })
 export class UserComponent implements OnInit {
   user = {
     id: 0, // this.authenticatedUser.user.id,
     name: '', //this.authenticatedUser.user.name,
   };
-
-  // public user = {
-  //   id: this.authenticatedUser.user.id,
-  //   name: this.authenticatedUser.user.name,
-  // };
 
   oldPassword = '';
   password = '';
@@ -36,8 +31,8 @@ export class UserComponent implements OnInit {
     private api: ApiService,
     private titleService: Title
   ) {
-    this.user.id = authenticatedUser.user.id;
-    this.user.name = authenticatedUser.user.name;
+    this.user.id = this.authenticatedUser.user?.id || 0;
+    this.user.name = this.authenticatedUser.user?.name || '';
   }
 
   ngOnInit(): void {
