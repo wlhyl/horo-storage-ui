@@ -1,10 +1,34 @@
-<nav class="home-navigation" aria-label="主导航">
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a [routerLink]="['../', path.Native]" routerLinkActive="active" class="nav-link" title="记录">记录</a>
-        </li>
-        <li class="nav-item">
-            <a [routerLink]="['../', path.User]" routerLinkActive="active" class="nav-link" title="用户">用户</a>
-        </li>
-    </ul>
-</nav>
+<div class="home-welcome card shadow mb-4">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-stars" style="font-size:2.2rem;color:#1765d5;"></i>
+    <div class="ms-3">
+      <h2 class="fw-bold mb-1">欢迎使用 Horo Storage！</h2>
+      <div class="text-muted">@if (user.user) { {{user.user.name}} }，祝你工作顺利！</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="quick-card card h-100 shadow-sm p-3 d-flex flex-row align-items-center" [routerLink]="['../', path.Native]">
+      <div class="icon-box bg-primary bg-opacity-10 text-primary me-3">
+        <i class="bi bi-journal-text"></i>
+      </div>
+      <div>
+        <div class="fw-bold fs-5 mb-1">星座管理</div>
+        <div class="text-muted small">管理和维护星座相关数据</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="quick-card card h-100 shadow-sm p-3 d-flex flex-row align-items-center" [routerLink]="['../', path.User]">
+      <div class="icon-box bg-success bg-opacity-10 text-success me-3">
+        <i class="bi bi-people"></i>
+      </div>
+      <div>
+        <div class="fw-bold fs-5 mb-1">用户管理</div>
+        <div class="text-muted small">管理系统用户信息</div>
+      </div>
+    </div>
+  </div>
+</div>

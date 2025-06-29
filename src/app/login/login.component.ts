@@ -6,10 +6,10 @@ import { AuthService } from '../services/auth/auth.service';
 import { Path } from '../enum/path';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.scss',
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  standalone: false,
 })
 export class LoginComponent implements OnInit {
   title = '登录';
@@ -38,9 +38,15 @@ export class LoginComponent implements OnInit {
   login() {
     this.nameError = null;
     this.passwordError = null;
-    if (this.name.length === 0) this.nameError = '请输入用户名';
+    if (this.name.length === 0) {
+      this.nameError = '请输入用户名';
+      return;
+    }
     // if (this.account.length >= 10) this.accountError = '不能大于10个字符';
-    if (this.password.length === 0) this.passwordError = '请输入密码';
+    if (this.password.length === 0) {
+      this.passwordError = '请输入密码';
+      return;
+    }
     // if (this.password.length >= 10) this.passwordError = '不能大于10个字符';
     this.auth.auth(this.name, this.password).subscribe({
       next: () => {

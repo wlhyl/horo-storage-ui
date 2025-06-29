@@ -1,23 +1,24 @@
-<div class="login">
-  <div class="login-box login-box-radius">
-    <h1 class="mb-3 text-center">登录</h1>
-
-
-    <input type="text" class="form-control my-2" placeholder="用户名" [(ngModel)]="name" name="name" />
-    @if (nameError) {
-      <div class="error"> {{nameError}} </div>
-    }
-
-    <input type="password" class="form-control my-2" placeholder="密码" [(ngModel)]="password" name="password" />
-    @if (passwordError) {
-      <div class="error"> {{passwordError}} </div>
-    }
-    @if (authError) {
-      <div class="error"> {{authError}} </div>
-    }
-    <div class="my-2">
-      <button type="submit" class="btn btn-primary login-button" (click)="login()">登录</button>
+<div class="login-bg d-flex align-items-center justify-content-center">
+  <div class="login-card shadow">
+    <div class="text-center mb-4">
+      <i class="bi bi-shield-lock" style="font-size:2.5rem;color:#1765d5;"></i>
+      <h2 class="fw-bold mt-2 mb-0">登录 Horo Storage</h2>
     </div>
-
+    <div class="mb-3">
+      <input type="text" class="form-control form-control-lg" placeholder="用户名" [(ngModel)]="name" name="name" autofocus />
+      @if (nameError) {
+        <div class="form-text text-danger">{{nameError}}</div>
+      }
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control form-control-lg" placeholder="密码" [(ngModel)]="password" name="password" />
+      @if (passwordError) {
+        <div class="form-text text-danger">{{passwordError}}</div>
+      }
+    </div>
+    @if (authError) {
+      <div class="form-text text-danger mb-2">{{authError}}</div>
+    }
+    <button type="submit" class="btn btn-primary w-100 py-2" (click)="login()">登录</button>
   </div>
 </div>

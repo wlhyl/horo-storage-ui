@@ -5,11 +5,58 @@
 
 @use "bootstrap-icons";
 
-.edit {
-    // color: blue;
-    cursor: pointer;
+@use 'sass:color';
 
-    &:hover {
-        text-decoration: underline;
-    }
+// 主题变量
+$primary: #1765d5;
+$secondary: #f5f7fa;
+$card-bg: #fff;
+$body-bg: #f5f7fa;
+$text-color: #222;
+$border-radius: 8px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+body {
+  background: $body-bg;
+  color: $text-color;
+  font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.card {
+  background: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+
+  &:hover,
+  &:focus {
+    background-color: color.adjust($primary, $lightness: -5%);
+    border-color: color.adjust($primary, $lightness: -5%);
+  }
+}
+
+input.form-control:focus,
+textarea.form-control:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 2px rgba(23, 101, 213, 0.1);
+}
+
+.table {
+  background: $card-bg;
+  border-radius: $border-radius;
+  overflow: hidden;
+}
+
+.edit {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }

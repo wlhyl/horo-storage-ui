@@ -1,23 +1,30 @@
-<!-- 头部导航 -->
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container-fluid">
-    <!-- 左侧占位 -->
-    <div class="navbar-brand invisible">占位</div>
-
-    <!-- 标题居中 -->
-    <span class="navbar-brand mb-0 h1 position-absolute start-50 translate-middle-x">{{title}}</span>
-
-    <!-- 用户信息 -->
+<!-- 顶部导航栏（含菜单） -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4" style="height:60px;">
+  <a class="navbar-brand fw-bold me-4" href="#" style="font-size: 1.5rem; letter-spacing: 2px;">Horo Storage</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row">
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center px-4 fw-medium" [routerLink]="path.Home" routerLinkActive="active">
+          <i class="bi bi-house me-2"></i>首页
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center px-4 fw-medium" [routerLink]="path.Native" routerLinkActive="active">
+          <i class="bi bi-journal-text me-2"></i>星座管理
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center px-4 fw-medium" [routerLink]="path.User" routerLinkActive="active">
+          <i class="bi bi-people me-2"></i>用户管理
+        </a>
+      </li>
+    </ul>
     <div class="d-flex align-items-center">
       @if (!user.isAuth) {
-        <button
-          class="btn btn-outline-light"
-          (click)="login()">
-          登录
-        </button>
+        <button class="btn btn-primary px-4" (click)="login()">登录</button>
       } @else {
         <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-outline-light" ngbDropdownToggle>
+          <button class="btn btn-outline-primary" ngbDropdownToggle>
             <i class="bi bi-person me-2"></i>{{user.user?.name}}
           </button>
           <div ngbDropdownMenu>
@@ -27,46 +34,15 @@
           </div>
         </div>
       }
-
     </div>
   </div>
 </nav>
 
-<!-- 主要内容区 -->
-<div class="container-fluid">
-  <div class="row mt-3">
-    <!-- 侧边导航 -->
-    <div class="col-md-2">
-      <div ngbNav #nav="ngbNav"
-        [(activeId)]="active"
-        class="nav-pills flex-column"
-        orientation="vertical">
-
-        <ng-container ngbNavItem="home">
-          <button ngbNavLink [routerLink]="path.Home">
-            <i class="bi bi-house me-2"></i>首页
-          </button>
-        </ng-container>
-
-        <ng-container ngbNavItem="natives">
-          <button ngbNavLink [routerLink]="path.Native">
-            <i class="bi bi-journal-text me-2"></i>记录
-          </button>
-        </ng-container>
-
-        <ng-container ngbNavItem="user">
-          <button ngbNavLink [routerLink]="path.User">
-            <i class="bi bi-people me-2"></i>用户
-          </button>
-        </ng-container>
-      </div>
+<!-- 主体内容区 -->
+<div class="container-fluid" style="min-height:calc(100vh - 60px);">
+  <main class="py-4">
+    <div class="card">
+      <router-outlet></router-outlet>
     </div>
-
-    <!-- 内容区 -->
-    <div class="col-md-10">
-      <div class="bg-light rounded p-3">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+  </main>
 </div>

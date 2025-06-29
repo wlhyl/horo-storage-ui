@@ -1,40 +1,35 @@
-<app-alert [(alerts)]="message"></app-alert>
-<div class="container">
-  <div class="row my-2">
-    <div class="col-2">账号</div>
-    <div class="col-4">
-      <input type="text" class="form-control" [(ngModel)]="user.name" name="name" disabled />
+<div class="user-setting-bg d-flex align-items-center justify-content-center">
+  <div class="user-setting-card shadow">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-circle" style="font-size:2.2rem;color:#1765d5;"></i>
+      <h3 class="fw-bold mt-2 mb-0">用户资料设置</h3>
     </div>
-  </div>
-
-  <div class="row my-2">
-    <div class="col-2">旧密码</div>
-    <div class="col-4">
-      <input type="password" class="form-control" [(ngModel)]="oldPassword" name="oldPassword" />
-    </div>
-  </div>
-  <div class="row my-2">
-    <div class="col-2">密码</div>
-    <div class="col-4">
-      <input type="password" class="form-control" [(ngModel)]="password" name="password" />
-    </div>
-  </div>
-  <div class="row my-2">
-    <div class="col-2">确认密码</div>
-    <div class="col-4">
-      <input type="password" class="form-control" [(ngModel)]="repeatPassword" name="repeatPassword" />
-    </div>
-  </div>
-  <div class="row my-2">
-    <div class="col-12">
-      <button type="submit" class="btn btn-primary login-button" (click)="updateUser()" [disabled]="updating">
+    <app-alert [(alerts)]="message"></app-alert>
+    <form (ngSubmit)="updateUser()">
+      <div class="mb-3">
+        <label class="form-label">账号</label>
+        <input type="text" class="form-control" [(ngModel)]="user.name" name="name" disabled />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">旧密码</label>
+        <input type="password" class="form-control" [(ngModel)]="oldPassword" name="oldPassword" autocomplete="current-password" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">新密码</label>
+        <input type="password" class="form-control" [(ngModel)]="password" name="password" autocomplete="new-password" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">确认新密码</label>
+        <input type="password" class="form-control" [(ngModel)]="repeatPassword" name="repeatPassword" autocomplete="new-password" />
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2" [disabled]="updating">
         @if (updating) {
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          更新...
+          更新中...
         } @else {
           <span>更新用户资料</span>
         }
       </button>
-    </div>
+    </form>
   </div>
 </div>

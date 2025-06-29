@@ -1,0 +1,33 @@
+.user-setting-bg {
+  min-height: 80vh;
+  background: linear-gradient(135deg, #e6f0fb 0%, #f5f7fa 100%);
+}
+
+.user-setting-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 32px 32px 32px;
+  min-width: 340px;
+  box-shadow: 0 4px 24px rgba(23,101,213,0.08);
+}
+
+.btn-primary {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.form-control:focus {
+  border-color: #1765d5;
+  box-shadow: 0 0 0 2px rgba(23,101,213,0.08);
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .user-setting-card {
+    min-width: unset;
+    padding: 24px 8px;
+  }
+}
