@@ -35,9 +35,9 @@ export interface LocationRequest {
  */
 export interface LongLatResponse {
   // 地名
-  name: String;
+  name: string;
   // 经度
-  longitude: String;
+  longitude: string;
   // 纬度
-  latitude: String;
+  latitude: string;
 }

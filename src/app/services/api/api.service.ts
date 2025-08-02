@@ -10,6 +10,7 @@ import {
   UpdateHoroscopeRequest,
 } from '../../interfaces/horoscope';
 import { PageResponser } from '../../interfaces/page';
+import { LongLatResponse } from '../../interfaces/location';
 
 @Injectable({
   providedIn: 'root',
@@ -62,5 +63,17 @@ export class ApiService {
     return this.http.delete<void>(`${this.url}/horoscopes/${id}`, {
       headers: { ...this.http_options, token: this.user.token },
     });
+  }
+
+  /**
+   * 查询经纬度
+   */
+  getLongLat(name: string): Observable<Array<LongLatResponse>> {
+    return this.http.get<Array<LongLatResponse>>(
+      `${this.url}/location_search?q=${name}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
   }
 }

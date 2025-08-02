@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-08-03
+
+### Added
+
+- 为本地存储服务添加了根据地名查询经纬度的功能，用户可以通过搜索按钮查询并从结果列表中选择合适的地理位置
+
 ## [0.2.0] - 2025-06-29
 
 ### Fixed
