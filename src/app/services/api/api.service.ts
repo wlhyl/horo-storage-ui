@@ -4,7 +4,11 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UpdateUserRequest } from '../../interfaces/user';
 import { AuthService } from '../auth/auth.service';
-import { Horoscope, HoroscopeRequest, UpdateHoroscopeRequest } from '../../interfaces/horoscope';
+import {
+  Horoscope,
+  HoroscopeRequest,
+  UpdateHoroscopeRequest,
+} from '../../interfaces/horoscope';
 import { PageResponser } from '../../interfaces/page';
 
 @Injectable({
@@ -44,7 +48,10 @@ export class ApiService {
   }
 
   // 更新horoscope
-  updateHoroscope(id: number, horoscope: UpdateHoroscopeRequest): Observable<void> {
+  updateHoroscope(
+    id: number,
+    horoscope: UpdateHoroscopeRequest
+  ): Observable<void> {
     return this.http.put<void>(`${this.url}/horoscopes/${id}`, horoscope, {
       headers: { ...this.http_options, token: this.user.token },
     });

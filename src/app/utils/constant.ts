@@ -8,7 +8,7 @@ export const DEFAULT_LOCATION = {
   longitude_second: 0,
   is_north: true,
   latitude_minute: 0,
-  latitude_second: 0
+  latitude_second: 0,
 };
 
 export const DEFAULT_NATIVE = {
@@ -26,7 +26,7 @@ export const DEFAULT_NATIVE = {
   location: DEFAULT_LOCATION,
   description: '',
   created_at: '',
-  updated_at: null
+  updated_at: null,
 };
 
 export const PAGE_SIZE = 10;

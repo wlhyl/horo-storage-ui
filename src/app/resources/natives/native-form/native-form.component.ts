@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Horoscope } from '../../../interfaces/horoscope';
-import { TIME_ZONES } from '../../../constants/natives.constants';
+import { TIME_ZONES } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
 

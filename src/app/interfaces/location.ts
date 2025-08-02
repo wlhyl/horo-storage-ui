@@ -29,3 +29,15 @@ export interface LocationRequest {
   latitude_minute: number;
   latitude_second: number;
 }
+
+/**
+ * 从地名查询地理位置信息
+ */
+export interface LongLatResponse {
+  // 地名
+  name: String;
+  // 经度
+  longitude: String;
+  // 纬度
+  latitude: String;
+}
