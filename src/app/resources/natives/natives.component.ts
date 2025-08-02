@@ -10,7 +10,6 @@ import {
 import { Location, LocationRequest } from '../../interfaces/location';
 import { ApiService } from '../../services/api/api.service';
 import { AlertKind } from '../../enum/alert';
-import { deepClone } from '../../utils/deepclone';
 import { DEFAULT_NATIVE, DEFAULT_LOCATION, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NativeFormComponent } from './native-form/native-form.component';
@@ -80,7 +79,7 @@ export class NativesComponent implements OnInit {
   edit(id: number) {
     const native = this.natives.data.find(n => n.id === id);
     if (native) {
-      this.openNativeForm(deepClone(native));
+      this.openNativeForm(structuredClone(native));
     }
   }
 
