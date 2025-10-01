@@ -1,4 +1,7 @@
-export const DEFAULT_LOCATION = {
+import { Horoscope } from '../interfaces/horoscope';
+import { Location } from '../interfaces/location';
+
+export const DEFAULT_LOCATION: Location = {
   id: 0,
   name: '',
   longitude_degree: 0,
@@ -11,7 +14,7 @@ export const DEFAULT_LOCATION = {
   latitude_second: 0,
 };
 
-export const DEFAULT_NATIVE = {
+export const DEFAULT_NATIVE: Horoscope = {
   id: 0,
   name: '',
   gender: true,
@@ -27,6 +30,7 @@ export const DEFAULT_NATIVE = {
   description: '',
   created_at: '',
   updated_at: null,
+  lock: false,
 };
 
 export const PAGE_SIZE = 10;

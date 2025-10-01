@@ -56,7 +56,7 @@
                   </button>
                 }
                 @if (deleting==0) {
-                  <button class="btn btn-sm btn-outline-danger" (click)="delete(native.id)"><i class="bi bi-trash"></i> 删除</button>
+                  <button class="btn btn-sm btn-outline-danger" [disabled]="native.lock" (click)="delete(native.id)"><i class="bi bi-trash"></i> 删除</button>
                 }
                 @if (deleting>0 && deleting!=native.id) {
                   <button class="btn btn-sm btn-outline-danger" disabled>等待中...</button>

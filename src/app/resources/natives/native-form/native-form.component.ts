@@ -160,6 +160,14 @@ export class NativeFormComponent {
   save() {
     this.alerts = [];
 
+    // 如果是编辑已锁定的记录，只验证描述和锁定状态
+    if (this.native.id > 0 && this.native.lock) {
+      // 对于已锁定的记录，只允许更新描述和锁定状态
+      // 其他字段保持原值，不需要验证
+      this.activeModal.close(this.native);
+      return;
+    }
+
     // 验证基本信息
     if (!this.validateBasicInfo()) {
       return;

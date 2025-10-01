@@ -10,7 +10,7 @@ import {
 import { Location, LocationRequest } from '../../interfaces/location';
 import { ApiService } from '../../services/api/api.service';
 import { AlertKind } from '../../enum/alert';
-import { DEFAULT_NATIVE, DEFAULT_LOCATION, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
+import { DEFAULT_NATIVE, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NativeFormComponent } from './native-form/native-form.component';
 
@@ -27,7 +27,7 @@ export class NativesComponent implements OnInit {
 
   saving = false;
   deleting = 0;
-  refreshing = false;  // 添加刷新状态标志
+  refreshing = false; // 添加刷新状态标志
 
   natives: PageResponser<Array<Horoscope>> = {
     data: [],
@@ -37,53 +37,72 @@ export class NativesComponent implements OnInit {
   // 新增/更新native
   native: Horoscope = {
     ...DEFAULT_NATIVE,
-    ...this.nowDate()
+    ...this.nowDate(),
   };
 
   zones = TIME_ZONES;
-  showForm = false;  // 控制表单显示/隐藏
+  showForm = false; // 控制表单显示/隐藏
 
   constructor(
-    private api: ApiService, 
+    private api: ApiService,
     private titleService: Title,
     private modalService: NgbModal
   ) {}
   ngOnInit(): void {
-    this.titleService.setTitle('例');
+    this.titleService.setTitle('天宫图列表');
     this.getNatives();
   }
 
   getNatives() {
-    if ( this.saving || this.refreshing) {
+    if (this.saving || this.refreshing) {
       return; // 如果正在刷新，直接返回
     }
 
     this.message = [];
-    this.refreshing = true;  // 开始刷新
-    this.api.getHoroscopes(this.page, this.size).subscribe({
-      next: (response) => (this.natives = response),
-      error: (error) => {
-        const msg = error.error.error;
-        let message = '获取native失败！';
-        if (msg) message += msg;
-        this.message.push({
-          kind: AlertKind.DANGER,
-          message,
-        });
-      },
-    }).add(() => {
-      this.refreshing = false;  // 结束刷新
-    });
+    this.refreshing = true; // 开始刷新
+    this.api
+      .getHoroscopes(this.page, this.size)
+      .subscribe({
+        next: (response) => (this.natives = response),
+        error: (error) => {
+          const msg = error.error.error;
+          let message = '获取native失败！';
+          if (msg) message += msg;
+          this.message.push({
+            kind: AlertKind.DANGER,
+            message,
+          });
+        },
+      })
+      .add(() => {
+        this.refreshing = false; // 结束刷新
+      });
   }
 
   edit(id: number) {
-    const native = this.natives.data.find(n => n.id === id);
+    const native = this.natives.data.find((n) => n.id === id);
     if (native) {
       this.openNativeForm(structuredClone(native));
     }
   }
 
   delete(id: number) {
+    const native = this.natives.data.find((n) => n.id === id);
+    if (!native) {
+      this.message.push({
+        kind: AlertKind.WARNING,
+        message: '记录不存在！',
+      });
+      return;
+    }
+
+    if (native.lock) {
+      this.message.push({
+        kind: AlertKind.WARNING,
+        message: '已锁定的记录不能删除！',
+      });
+      return;
+    }
     this.message = [];
     this.deleting = id;
     this.api
@@ -127,6 +146,7 @@ export class NativesComponent implements OnInit {
         ...native.location,
       },
       description: native.description,
+      lock: native.lock,
     };
 
     const locationErrors = this.validateLocation(nativeRequest.location);
@@ -171,18 +191,66 @@ export class NativesComponent implements OnInit {
     }
 
     const nativeRequest: UpdateHoroscopeRequest = {
-      name: native.name === old_native.name ? null : native.name,
-      gender: native.gender === old_native.gender ? null : native.gender,
-      birth_year: native.birth_year === old_native.birth_year ? null : native.birth_year,
-      birth_month: native.birth_month === old_native.birth_month ? null : native.birth_month,
-      birth_day: native.birth_day === old_native.birth_day ? null : native.birth_day,
-      birth_hour: native.birth_hour === old_native.birth_hour ? null : native.birth_hour,
-      birth_minute: native.birth_minute === old_native.birth_minute ? null : native.birth_minute,
-      birth_second: native.birth_second === old_native.birth_second ? null : native.birth_second,
-      time_zone_offset: native.time_zone_offset === old_native.time_zone_offset ? null : native.time_zone_offset,
-      is_dst: native.is_dst === old_native.is_dst ? null : native.is_dst,
-      location: this.isLocationEqual(native.location, old_native.location) ? null : native.location,
-      description: native.description === old_native.description ? null : native.description,
+      name: old_native.lock
+        ? null
+        : native.name === old_native.name
+        ? null
+        : native.name,
+      gender: old_native.lock
+        ? null
+        : native.gender === old_native.gender
+        ? null
+        : native.gender,
+      birth_year: old_native.lock
+        ? null
+        : native.birth_year === old_native.birth_year
+        ? null
+        : native.birth_year,
+      birth_month: old_native.lock
+        ? null
+        : native.birth_month === old_native.birth_month
+        ? null
+        : native.birth_month,
+      birth_day: old_native.lock
+        ? null
+        : native.birth_day === old_native.birth_day
+        ? null
+        : native.birth_day,
+      birth_hour: old_native.lock
+        ? null
+        : native.birth_hour === old_native.birth_hour
+        ? null
+        : native.birth_hour,
+      birth_minute: old_native.lock
+        ? null
+        : native.birth_minute === old_native.birth_minute
+        ? null
+        : native.birth_minute,
+      birth_second: old_native.lock
+        ? null
+        : native.birth_second === old_native.birth_second
+        ? null
+        : native.birth_second,
+      time_zone_offset: old_native.lock
+        ? null
+        : native.time_zone_offset === old_native.time_zone_offset
+        ? null
+        : native.time_zone_offset,
+      is_dst: old_native.lock
+        ? null
+        : native.is_dst === old_native.is_dst
+        ? null
+        : native.is_dst,
+      location: old_native.lock
+        ? null
+        : this.isLocationEqual(native.location, old_native.location)
+        ? null
+        : native.location,
+      description:
+        native.description === old_native.description
+          ? null
+          : native.description,
+      lock: native.lock === old_native.lock ? null : native.lock,
     };
 
     if (nativeRequest.location) {
@@ -218,15 +286,15 @@ export class NativesComponent implements OnInit {
   cancel() {
     this.native = {
       ...DEFAULT_NATIVE,
-      ...this.nowDate()
+      ...this.nowDate(),
     };
-    this.showForm = false;  // 隐藏表单
+    this.showForm = false; // 隐藏表单
   }
 
   showAddForm() {
     const native = {
       ...DEFAULT_NATIVE,
-      ...this.nowDate()
+      ...this.nowDate(),
     };
     this.openNativeForm(native);
   }
@@ -261,7 +329,7 @@ export class NativesComponent implements OnInit {
     };
   }
 
-  private isLocationEqual(loc1: Location, loc2: Location): boolean {
+  private isLocationEqual(loc1: Readonly<Location>, loc2: Readonly<Location>): boolean {
     return (
       loc1.name === loc2.name &&
       loc1.longitude_degree === loc2.longitude_degree &&
@@ -275,40 +343,40 @@ export class NativesComponent implements OnInit {
     );
   }
 
-  private validateLocation(location: LocationRequest): Alert[] {
+  private validateLocation(location: Readonly<LocationRequest>): Alert[] {
     const alerts: Alert[] = [];
 
     // 验证城市名
     if (location.name === '') {
       alerts.push({
         kind: AlertKind.DANGER,
-        message: '请输入城市名'
+        message: '请输入城市名',
       });
     }
 
     // 验证经度
-    const longitude = 
-      location.longitude_degree + 
-      location.longitude_minute / 60 + 
+    const longitude =
+      location.longitude_degree +
+      location.longitude_minute / 60 +
       location.longitude_second / 3600;
-      
+
     if (longitude > 180) {
       alerts.push({
         kind: AlertKind.DANGER,
-        message: '-180<=long<=180'
+        message: '-180<=long<=180',
       });
     }
 
     // 验证纬度
-    const latitude = 
-      location.latitude_degree + 
-      location.latitude_minute / 60 + 
+    const latitude =
+      location.latitude_degree +
+      location.latitude_minute / 60 +
       location.latitude_second / 3600;
-      
+
     if (latitude > 90) {
       alerts.push({
         kind: AlertKind.DANGER,
-        message: '-90<=lat<=90'
+        message: '-90<=lat<=90',
       });
     }
 
@@ -318,12 +386,12 @@ export class NativesComponent implements OnInit {
   private openNativeForm(native: Horoscope) {
     const modalRef = this.modalService.open(NativeFormComponent, {
       size: 'lg',
-      backdrop: 'static'
+      backdrop: 'static',
     });
-    
+
     modalRef.componentInstance.native = native;
     modalRef.componentInstance.saving = this.saving;
-  
+
     modalRef.result.then(
       (result: Horoscope) => {
         if (result.id === 0) {

@@ -16,16 +16,16 @@
     <div class="row mb-3">
       <label for="name" class="col-2 col-form-label">姓名</label>
       <div class="col-4">
-        <input type="text" class="form-control" id="name" [(ngModel)]="native.name" name="name" />
+        <input type="text" class="form-control" id="name" [(ngModel)]="native.name" name="name" [disabled]="native.id > 0 && native.lock" />
       </div>
       <label class="col-2 col-form-label">性别</label>
       <div class="col-4">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" id="male" [(ngModel)]="native.gender" [value]="true" name="gender">
+          <input class="form-check-input" type="radio" id="male" [(ngModel)]="native.gender" [value]="true" name="gender" [disabled]="native.id > 0 && native.lock">
           <label class="form-check-label" for="male">男</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" id="female" [(ngModel)]="native.gender" [value]="false" name="gender">
+          <input class="form-check-input" type="radio" id="female" [(ngModel)]="native.gender" [value]="false" name="gender" [disabled]="native.id > 0 && native.lock">
           <label class="form-check-label" for="female">女</label>
         </div>
       </div>
@@ -38,19 +38,19 @@
     <div class="row mb-3">
       <div class="col-12">
         <div class="input-group">
-          <input type="number" class="form-control" id="year" [(ngModel)]="native.birth_year" name="year" min="1900" max="2100">
+          <input type="number" class="form-control" id="year" [(ngModel)]="native.birth_year" name="year" min="1900" max="2100" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">年</span>
-          <input type="number" class="form-control" id="month" [(ngModel)]="native.birth_month" name="month" min="1" max="12">
+          <input type="number" class="form-control" id="month" [(ngModel)]="native.birth_month" name="month" min="1" max="12" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">月</span>
-          <input type="number" class="form-control" id="day" [(ngModel)]="native.birth_day" name="day" min="1" max="31">
+          <input type="number" class="form-control" id="day" [(ngModel)]="native.birth_day" name="day" min="1" max="31" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">日</span>
         </div>
         <div class="input-group mt-2">
-          <input type="number" class="form-control" id="hour" [(ngModel)]="native.birth_hour" name="hour" min="0" max="23">
+          <input type="number" class="form-control" id="hour" [(ngModel)]="native.birth_hour" name="hour" min="0" max="23" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">时</span>
-          <input type="number" class="form-control" id="minute" [(ngModel)]="native.birth_minute" name="minute" min="0" max="59">
+          <input type="number" class="form-control" id="minute" [(ngModel)]="native.birth_minute" name="minute" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">分</span>
-          <input type="number" class="form-control" id="second" [(ngModel)]="native.birth_second" name="second" min="0" max="59">
+          <input type="number" class="form-control" id="second" [(ngModel)]="native.birth_second" name="second" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">秒</span>
         </div>
       </div>
@@ -58,7 +58,7 @@
     <div class="row mb-3">
       <label class="col-2 col-form-label">时区</label>
       <div class="col-4">
-        <select class="form-select" id="timezone" [(ngModel)]="native.time_zone_offset" name="timezone">
+        <select class="form-select" id="timezone" [(ngModel)]="native.time_zone_offset" name="timezone" [disabled]="native.id > 0 && native.lock">
           @for (item of zones; track item) {
             <option [ngValue]="item">
               @switch (true) {
@@ -72,7 +72,7 @@
       </div>
       <label class="col-2 col-form-label">夏令时</label>
       <div class="col-4 d-flex align-items-center">
-        <input type="checkbox" class="form-check-input me-2" id="dst" [(ngModel)]="native.is_dst" name="dst">
+        <input type="checkbox" class="form-check-input me-2" id="dst" [(ngModel)]="native.is_dst" name="dst" [disabled]="native.id > 0 && native.lock">
         <label class="form-check-label mb-0" for="dst">启用夏令时</label>
       </div>
     </div>
@@ -85,8 +85,8 @@
       <label class="col-2 col-form-label">城市</label>
       <div class="col-10">
         <div class="input-group">
-          <input type="text" class="form-control" id="city" [(ngModel)]="native.location.name" name="city">
-          <button class="btn btn-outline-primary" type="button" (click)="queryLocation()" [disabled]="queryingLocation">
+          <input type="text" class="form-control" id="city" [(ngModel)]="native.location.name" name="city" [disabled]="native.id > 0 && native.lock">
+          <button class="btn btn-outline-primary" type="button" (click)="queryLocation()" [disabled]="queryingLocation || (native.id > 0 && native.lock)">
             @if (queryingLocation) {
               <span class="spinner-border spinner-border-sm"></span>
             } @else {
@@ -99,7 +99,7 @@
           <div class="location-results mt-2 border rounded">
             <div class="list-group list-group-flush">
               @for (location of locationResults; track location) {
-                <button type="button" class="list-group-item list-group-item-action py-2 w-100 text-start" (click)="selectLocation(location)">
+                <button type="button" class="list-group-item list-group-item-action py-2 w-100 text-start" (click)="selectLocation(location)" [disabled]="native.id > 0 && native.lock">
                   <div class="d-flex justify-content-between">
                     <span class="fw-bold">{{ location.name }}</span>
                   </div>
@@ -117,14 +117,14 @@
       <label class="col-2 col-form-label">经度</label>
       <div class="col-10">
         <div class="input-group">
-          <input type="number" class="form-control" id="longitude_degree" [(ngModel)]="native.location.longitude_degree" name="longitude_degree" min="0" max="180">
+          <input type="number" class="form-control" id="longitude_degree" [(ngModel)]="native.location.longitude_degree" name="longitude_degree" min="0" max="180" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">度</span>
-          <input type="number" class="form-control" id="longitude_minute" [(ngModel)]="native.location.longitude_minute" name="longitude_minute" min="0" max="59">
+          <input type="number" class="form-control" id="longitude_minute" [(ngModel)]="native.location.longitude_minute" name="longitude_minute" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">分</span>
-          <input type="number" class="form-control" id="longitude_second" [(ngModel)]="native.location.longitude_second" name="longitude_second" min="0" max="59">
+          <input type="number" class="form-control" id="longitude_second" [(ngModel)]="native.location.longitude_second" name="longitude_second" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">秒</span>
           <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" id="is_east" [(ngModel)]="native.location.is_east" name="is_east">
+            <input class="form-check-input mt-0" type="checkbox" id="is_east" [(ngModel)]="native.location.is_east" name="is_east" [disabled]="native.id > 0 && native.lock">
             <label class="form-check-label ms-2" for="is_east">东经</label>
           </div>
         </div>
@@ -134,14 +134,14 @@
       <label class="col-2 col-form-label">纬度</label>
       <div class="col-10">
         <div class="input-group">
-          <input type="number" class="form-control" id="latitude_degree" [(ngModel)]="native.location.latitude_degree" name="latitude_degree" min="0" max="90">
+          <input type="number" class="form-control" id="latitude_degree" [(ngModel)]="native.location.latitude_degree" name="latitude_degree" min="0" max="90" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">度</span>
-          <input type="number" class="form-control" id="latitude_minute" [(ngModel)]="native.location.latitude_minute" name="latitude_minute" min="0" max="59">
+          <input type="number" class="form-control" id="latitude_minute" [(ngModel)]="native.location.latitude_minute" name="latitude_minute" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">分</span>
-          <input type="number" class="form-control" id="latitude_second" [(ngModel)]="native.location.latitude_second" name="latitude_second" min="0" max="59">
+          <input type="number" class="form-control" id="latitude_second" [(ngModel)]="native.location.latitude_second" name="latitude_second" min="0" max="59" [disabled]="native.id > 0 && native.lock">
           <span class="input-group-text">秒</span>
           <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" id="is_north" [(ngModel)]="native.location.is_north" name="is_north">
+            <input class="form-check-input mt-0" type="checkbox" id="is_north" [(ngModel)]="native.location.is_north" name="is_north" [disabled]="native.id > 0 && native.lock">
             <label class="form-check-label ms-2" for="is_north">北纬</label>
           </div>
         </div>
@@ -156,6 +156,18 @@
       <label for="description" class="col-2 col-form-label">描述</label>
       <div class="col-10">
         <textarea class="form-control" id="description" rows="2" [(ngModel)]="native.description" name="description"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 锁定状态部分 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">锁定状态</div>
+    <div class="row">
+      <label class="col-2 col-form-label">锁定记录</label>
+      <div class="col-10 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="lock" [(ngModel)]="native.lock" name="lock">
+        <label class="form-check-label mb-0" for="lock">（锁定后只能修改描述和锁定状态）</label>
       </div>
     </div>
   </div>
