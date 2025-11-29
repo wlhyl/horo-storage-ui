@@ -65,6 +65,17 @@ export class ApiService {
     });
   }
 
+  // 搜索horoscopes记录
+  searchHoroscopes(params: any): Observable<PageResponser<Array<Horoscope>>> {
+    return this.http.get<PageResponser<Array<Horoscope>>>(
+      `${this.url}/horoscopes/search`,
+      {
+        params,
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
   /**
    * 查询经纬度
    */

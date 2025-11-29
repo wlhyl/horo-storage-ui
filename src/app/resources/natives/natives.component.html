@@ -13,6 +13,45 @@
       </div>
     </div>
     <app-alert [(alerts)]="message"></app-alert>
+    
+    <!-- 搜索表单 -->
+    <div class="search-form mb-3">
+      <form (ngSubmit)="search()">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-2">
+            <input type="text" id="name" class="form-control" [(ngModel)]="searchParams.name" name="name" placeholder="姓名">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="year" class="form-control" [(ngModel)]="searchParams.year" name="year" placeholder="年" min="1900" max="2100">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="month" class="form-control" [(ngModel)]="searchParams.month" name="month" placeholder="月" min="1" max="12">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="day" class="form-control" [(ngModel)]="searchParams.day" name="day" placeholder="日" min="1" max="31">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="hour" class="form-control" [(ngModel)]="searchParams.hour" name="hour" placeholder="时" min="0" max="23">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="minute" class="form-control" [(ngModel)]="searchParams.minute" name="minute" placeholder="分" min="0" max="59">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="second" class="form-control" [(ngModel)]="searchParams.second" name="second" placeholder="秒" min="0" max="59">
+          </div>
+          <div class="col-md-3">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary" [disabled]="saving || refreshing">
+                <i class="bi bi-search me-1"></i>搜索
+              </button>
+              <button type="button" class="btn btn-secondary" [disabled]="!isSearchMode" (click)="resetSearch()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>重置
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">

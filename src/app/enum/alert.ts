@@ -1,7 +1,7 @@
 export enum AlertKind {
   SUCCESS = 'success',
   INFO = 'info',
-  WARNING = '  warning',
+  WARNING = 'warning',
   DANGER = 'danger',
   PRIMARY = 'primary',
   SECONDARY = 'secondary',

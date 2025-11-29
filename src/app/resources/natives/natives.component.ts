@@ -6,6 +6,7 @@ import {
   Horoscope,
   HoroscopeRequest,
   UpdateHoroscopeRequest,
+  SearchHoroscopeRequest,
 } from '../../interfaces/horoscope';
 import { Location, LocationRequest } from '../../interfaces/location';
 import { ApiService } from '../../services/api/api.service';
@@ -28,10 +29,24 @@ export class NativesComponent implements OnInit {
   saving = false;
   deleting = 0;
   refreshing = false; // 添加刷新状态标志
+  isSearchMode = false; // 跟踪当前是否处于搜索状态
 
   natives: PageResponser<Array<Horoscope>> = {
     data: [],
     total: 0,
+  };
+
+  // 搜索参数
+  searchParams: SearchHoroscopeRequest = {
+    page: 0,
+    size: PAGE_SIZE,
+    name: undefined,
+    year: undefined,
+    month: undefined,
+    day: undefined,
+    hour: undefined,
+    minute: undefined,
+    second: undefined,
   };
 
   // 新增/更新native
@@ -60,6 +75,7 @@ export class NativesComponent implements OnInit {
 
     this.message = [];
     this.refreshing = true; // 开始刷新
+    this.isSearchMode = false; // 设置为非搜索模式
     this.api
       .getHoroscopes(this.page, this.size)
       .subscribe({
@@ -77,6 +93,116 @@ export class NativesComponent implements OnInit {
       .add(() => {
         this.refreshing = false; // 结束刷新
       });
+  }
+
+  // 构建过滤后的搜索参数
+  private buildSearchParams(): {
+    params: SearchHoroscopeRequest;
+    hasSearchConditions: boolean;
+  } {
+    const params: SearchHoroscopeRequest = {
+      page: this.searchParams.page,
+      size: this.searchParams.size,
+    };
+
+    let hasSearchConditions = false;
+
+    // 处理name字段：空字符串不发送
+    if (this.searchParams.name && this.searchParams.name.trim() !== '') {
+      params.name = this.searchParams.name.trim();
+      hasSearchConditions = true;
+    }
+
+    // 处理其他时间字段：undefined不发送
+    // 为了避免类型错误，我们显式处理每个字段
+    const processField = <K extends keyof SearchHoroscopeRequest>(field: K) => {
+      if (
+        this.searchParams[field] !== undefined &&
+        this.searchParams[field] !== null
+      ) {
+        params[field] = this.searchParams[field]!;
+        if (
+          field === 'year' ||
+          field === 'month' ||
+          field === 'day' ||
+          field === 'hour'
+        ) {
+          hasSearchConditions = true;
+        }
+      }
+    };
+
+    processField('year');
+    processField('month');
+    processField('day');
+    processField('hour');
+    processField('minute');
+    processField('second');
+
+    return { params, hasSearchConditions };
+  }
+
+  // 搜索方法
+  search() {
+    if (this.saving || this.refreshing) {
+      return; // 如果正在刷新，直接返回
+    }
+
+    this.message = [];
+
+    // 过滤搜索参数，移除undefined和空字符串
+    const filteredParams = this.buildSearchParams();
+
+    // 检查是否有搜索条件
+    if (!filteredParams.hasSearchConditions) {
+      this.message.push({
+        kind: AlertKind.WARNING,
+        message: '请至少输入一个搜索条件（姓名、年、月、日、时）',
+      });
+      return;
+    }
+
+    this.refreshing = true; // 开始刷新
+    this.isSearchMode = true; // 设置为搜索模式
+
+    // 调用搜索接口
+    this.api
+      .searchHoroscopes(filteredParams.params)
+      .subscribe({
+        next: (response) => {
+          this.natives = response;
+        },
+        error: (error) => {
+          let message = '搜索失败！';
+          if (error.error.error) message += error.error.error;
+          else message += error.error;
+          this.message.push({
+            kind: AlertKind.DANGER,
+            message,
+          });
+        },
+      })
+      .add(() => {
+        this.refreshing = false; // 结束刷新
+      });
+  }
+
+  // 重置搜索
+  resetSearch() {
+    this.searchParams = {
+      page: 0,
+      size: PAGE_SIZE,
+      name: undefined,
+      year: undefined,
+      month: undefined,
+      day: undefined,
+      hour: undefined,
+      minute: undefined,
+      second: undefined,
+    };
+    // 重新加载列表
+    this.page = 0;
+    this.getNatives();
   }
 
   edit(id: number) {
@@ -125,8 +251,15 @@ export class NativesComponent implements OnInit {
   }
 
   pageChange(page: number) {
-    this.page = page;
-    this.getNatives();
+    if (this.isSearchMode) {
+      // 搜索模式下，使用searchParams.page并调用search()
+      this.searchParams.page = page;
+      this.search();
+    } else {
+      // 非搜索模式下，使用this.page并调用getNatives()
+      this.page = page;
+      this.getNatives();
+    }
   }
 
   add(native: Horoscope) {
@@ -329,7 +462,10 @@ export class NativesComponent implements OnInit {
     };
   }
 
-  private isLocationEqual(loc1: Readonly<Location>, loc2: Readonly<Location>): boolean {
+  private isLocationEqual(
+    loc1: Readonly<Location>,
+    loc2: Readonly<Location>
+  ): boolean {
     return (
       loc1.name === loc2.name &&
       loc1.longitude_degree === loc2.longitude_degree &&
