@@ -1,11 +1,10 @@
 <div style="text-align: center;">
   @if (page>0) {
-    <i class="bi bi-caret-left page" (click)="previous()"></i>
+  <i class="bi bi-caret-left page" (click)="previous()"></i>
   }
-@for (item of [].constructor(end-start+1); track item; let i = $index) {
-  <span class="mx-2" [ngClass]="{page: (start+i-1)!==page}" (click)="toPage(i)">{{start + i}}</span>
-}
-@if (page<total-1) {
-  <i class="bi bi-caret-right page" (click)="next()"></i>
-}
+  @for (item of [].constructor(end-start+1); track item; let i = $index) {
+  <span class="mx-2" [ngClass]="{page: (start+i-1)!==page}" (click)="toPage(start+i-1)">{{start + i}}</span>
+  }
+  @if (page<total-1) { <i class="bi bi-caret-right page" (click)="next()"></i>
+    }
 </div>
