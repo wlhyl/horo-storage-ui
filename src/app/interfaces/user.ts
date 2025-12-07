@@ -1,7 +1,14 @@
 export interface AuthUser {
   id: number;
   name: string;
+  role: string;
   exp: number;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  role: string;
 }
 
 export interface UpdateUserRequest {

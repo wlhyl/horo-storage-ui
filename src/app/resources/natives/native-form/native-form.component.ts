@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Horoscope } from '../../../interfaces/horoscope';
 import { TIME_ZONES } from '../../../utils/constant';
@@ -6,6 +6,8 @@ import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
 import { ApiService } from '../../../services/api/api.service';
 import { LongLatResponse } from '../../../interfaces/location';
+import { AuthService } from '../../../services/auth/auth.service';
+import { User } from '../../../interfaces/user';
 
 @Component({
   selector: 'app-native-form',
@@ -13,7 +15,7 @@ import { LongLatResponse } from '../../../interfaces/location';
   styleUrls: ['./native-form.component.scss'],
   standalone: false,
 })
-export class NativeFormComponent {
+export class NativeFormComponent implements OnInit {
   @Input() native!: Horoscope;
   @Input() saving = false;
   zones = TIME_ZONES;
@@ -21,11 +23,44 @@ export class NativeFormComponent {
   queryingLocation = false;
   locationResults: LongLatResponse[] = [];
   showLocationResults = false;
+  
+  // 管理员相关属性
+  users: User[] = [];
+  isAdmin = false;
 
   constructor(
     public activeModal: NgbActiveModal,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private authService: AuthService
   ) {}
+  
+  ngOnInit(): void {
+    this.checkAdmin();
+    if (this.isAdmin) {
+      this.getUsers();
+    }
+  }
+  
+  private checkAdmin(): void {
+    const user = this.authService.user;
+    this.isAdmin = user?.role === 'admin';
+  }
+  
+  private getUsers(): void {
+    this.apiService.getUsers().subscribe({
+      next: (users) => {
+        this.users = users;
+      },
+      error: (error) => {
+        this.alerts.push({
+          kind: AlertKind.DANGER,
+          message:
+            '查询用户列表失败: ' +
+            (error.error?.message || error.message || '未知错误'),
+        });
+      },
+    });
+  }
 
   queryLocation() {
     const cityName = this.native.location.name?.trim();

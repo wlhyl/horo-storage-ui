@@ -20,6 +20,7 @@ export interface Horoscope {
   created_at: string;
   updated_at: string | null;
   lock: boolean;
+  user_id: number;
 }
 
 export interface HoroscopeRequest {
@@ -79,6 +80,8 @@ export interface UpdateHoroscopeRequest {
   description: string | null;
   // 是否锁定
   lock: Boolean | null;
+  // 所属用户ID
+  user_id: number | null;
 }
 
 // 搜索请求接口

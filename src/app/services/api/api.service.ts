@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { UpdateUserRequest } from '../../interfaces/user';
+import { UpdateUserRequest, User } from '../../interfaces/user';
 import { AuthService } from '../auth/auth.service';
 import {
   Horoscope,
@@ -86,5 +86,14 @@ export class ApiService {
         headers: { ...this.http_options, token: this.user.token },
       }
     );
+  }
+
+  /**
+   * 获取用户列表
+   */
+  getUsers(): Observable<Array<User>> {
+    return this.http.get<Array<User>>(`${this.url}/users`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
   }
 }

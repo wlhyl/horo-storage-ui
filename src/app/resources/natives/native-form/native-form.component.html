@@ -30,6 +30,19 @@
         </div>
       </div>
     </div>
+    <!-- 管理员可修改的所属用户 -->
+    @if (isAdmin) {
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">所属用户</label>
+        <div class="col-10">
+          <select class="form-select" [(ngModel)]="native.user_id" name="user_id" [disabled]="native.id > 0 && native.lock">
+            @for (user of users; track user) {
+              <option [ngValue]="user.id">{{user.username}} ({{user.role}})</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
   </div>
 
   <!-- 时间信息部分 -->

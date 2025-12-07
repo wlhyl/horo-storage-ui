@@ -10,6 +10,7 @@ import {
 } from '../../interfaces/horoscope';
 import { Location, LocationRequest } from '../../interfaces/location';
 import { ApiService } from '../../services/api/api.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { AlertKind } from '../../enum/alert';
 import { DEFAULT_NATIVE, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -58,10 +59,17 @@ export class NativesComponent implements OnInit {
   zones = TIME_ZONES;
   showForm = false; // 控制表单显示/隐藏
 
+  // 检查当前用户是否为管理员
+  get isAdmin(): boolean {
+    const user = this.authService.user;
+    return user?.role === 'admin';
+  }
+
   constructor(
     private api: ApiService,
     private titleService: Title,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private authService: AuthService
   ) {}
   ngOnInit(): void {
     this.titleService.setTitle('天宫图列表');
@@ -384,6 +392,11 @@ export class NativesComponent implements OnInit {
           ? null
           : native.description,
       lock: native.lock === old_native.lock ? null : native.lock,
+      // 所属用户ID：只有管理员且user_id有变化时才提供
+      user_id:
+        this.isAdmin && native.user_id !== old_native.user_id
+          ? native.user_id
+          : null,
     };
 
     if (nativeRequest.location) {
@@ -396,24 +409,23 @@ export class NativesComponent implements OnInit {
 
     this.saving = true;
 
-    this.api
-      .updateHoroscope(native.id, nativeRequest)
-      .subscribe({
-        next: () => {},
-        error: (error) => {
-          let msg = error.error.error;
-          let message = '更新记录失败！';
-          if (msg) message += msg;
-          this.message.push({
-            kind: AlertKind.DANGER,
-            message,
-          });
-        },
-      })
-      .add(() => {
+    this.api.updateHoroscope(native.id, nativeRequest).subscribe({
+      next: () => {
+        // 注意：调用getNatives()前需要将saving设置为false
         this.saving = false;
         this.getNatives();
-      });
+      },
+      error: (error) => {
+        let msg = error.error.error;
+        let message = '更新记录失败！';
+        if (msg) message += msg;
+        this.message.push({
+          kind: AlertKind.DANGER,
+          message,
+        });
+        this.saving = false;
+      },
+    });
   }
 
   cancel() {

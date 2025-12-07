@@ -31,6 +31,7 @@ export const DEFAULT_NATIVE: Horoscope = {
   created_at: '',
   updated_at: null,
   lock: false,
+  user_id: 0,
 };
 
 export const PAGE_SIZE = 10;
