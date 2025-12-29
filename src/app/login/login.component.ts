@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   ) {
     // 返回上一个url的参考连接；
     // https://stackoverflow.com/questions/35446955/how-to-go-back-last-page
-    this.canGoBack = !!this.router.getCurrentNavigation()?.previousNavigation;
+    this.canGoBack = !!this.router.currentNavigation()?.previousNavigation;
   }
   ngOnInit(): void {
     this.titleService.setTitle(this.title);
