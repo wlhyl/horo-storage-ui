@@ -15,6 +15,7 @@ import { AlertKind } from '../../enum/alert';
 import { DEFAULT_NATIVE, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NativeFormComponent } from './native-form/native-form.component';
+import { ConfirmModalComponent } from '../../common/confirm/confirm-modal.component';
 
 @Component({
   selector: 'app-natives',
@@ -237,13 +238,32 @@ export class NativesComponent implements OnInit {
       });
       return;
     }
+
+    const modalRef = this.modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.message = `确定要删除 "${native.name}" 这条记录吗？`;
+
+    modalRef.result.then(
+      (confirmed: boolean) => {
+        if (confirmed) {
+          this.executeDelete(id);
+        }
+      },
+      () => {}
+    );
+  }
+
+  private executeDelete(id: number) {
     this.message = [];
     this.deleting = id;
     this.api
       .deleteHoroscope(id)
       .subscribe({
         next: () => {
-          this.getNatives();
+          if (this.isSearchMode) {
+            this.search();
+          } else {
+            this.getNatives();
+          }
         },
         error: (error) => {
           let msg = error.error.error;
@@ -411,9 +431,12 @@ export class NativesComponent implements OnInit {
 
     this.api.updateHoroscope(native.id, nativeRequest).subscribe({
       next: () => {
-        // 注意：调用getNatives()前需要将saving设置为false
         this.saving = false;
-        this.getNatives();
+        if (this.isSearchMode) {
+          this.search();
+        } else {
+          this.getNatives();
+        }
       },
       error: (error) => {
         let msg = error.error.error;

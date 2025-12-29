@@ -15,9 +15,10 @@ import {
 
 import { AlertComponent } from './alert/alert.component';
 import { PageChangeComponent } from './page-change/page-change.component';
+import { ConfirmModalComponent } from './confirm/confirm-modal.component';
 
 @NgModule({
-  declarations: [AlertComponent, PageChangeComponent],
+  declarations: [AlertComponent, PageChangeComponent, ConfirmModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -36,6 +37,7 @@ import { PageChangeComponent } from './page-change/page-change.component';
     // ChipsComponent,
     // UploadComponent,
     // NgbTooltipModule,
+    ConfirmModalComponent,
   ],
 })
 export class StorageCommonModule {}
