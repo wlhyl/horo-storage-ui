@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    selector: 'app-page-change',
-    templateUrl: './page-change.component.html',
-    styleUrl: './page-change.component.scss',
-    standalone: false
+  selector: 'app-page-change',
+  templateUrl: './page-change.component.html',
+  styleUrl: './page-change.component.scss',
+  standalone: false,
 })
 export class PageChangeComponent {
   @Input()
@@ -40,6 +40,18 @@ export class PageChangeComponent {
     // page 最多到total-1
     if (this.page >= this.total - 1) return;
     this.page += 1;
+    this.pageChange.emit(this.page);
+  }
+
+  first(): void {
+    if (this.page <= 0) return;
+    this.page = 0;
+    this.pageChange.emit(this.page);
+  }
+
+  last(): void {
+    if (this.page >= this.total - 1) return;
+    this.page = this.total - 1;
     this.pageChange.emit(this.page);
   }
 
