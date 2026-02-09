@@ -8,7 +8,7 @@ RUN npx ng build --base-href /horo-admin --deploy-url /horo-admin/
 
 RUN gzip /app/dist/horo_storage/browser/*js && gzip /app/dist/horo_storage/browser/*css #  && gzip /app/dist/horo_storage/browser/*html
 
-FROM nginx:1.29-alpine
+FROM nginx:1.29-alpine-slim
 
 #COPY --from=build /app/dist/horo_storage/browser/index.html /usr/share/nginx/html/index.html
 COPY --from=build /app/dist/horo_storage/browser /usr/share/nginx/html/horo-admin
