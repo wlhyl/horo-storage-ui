@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Horoscope } from '../../../interfaces/horoscope';
+import { Horoscope, HoroscopeRequest, UpdateHoroscopeRequest } from '../../../interfaces/horoscope';
 import { TIME_ZONES } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
 import { ApiService } from '../../../services/api/api.service';
-import { LongLatResponse } from '../../../interfaces/location';
+import { Location, LocationRequest, LongLatResponse } from '../../../interfaces/location';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../interfaces/user';
 
@@ -17,7 +17,6 @@ import { User } from '../../../interfaces/user';
 })
 export class NativeFormComponent implements OnInit {
   @Input() native!: Horoscope;
-  @Input() saving = false;
   zones = TIME_ZONES;
   alerts: Alert[] = [];
   queryingLocation = false;
@@ -27,6 +26,8 @@ export class NativeFormComponent implements OnInit {
   // 管理员相关属性
   users: User[] = [];
   isAdmin = false;
+  isSubmitting = false;
+  private originalNative?: Horoscope;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -35,6 +36,9 @@ export class NativeFormComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
+    if (this.native.id > 0) {
+      this.originalNative = structuredClone(this.native);
+    }
     this.checkAdmin();
     if (this.isAdmin) {
       this.getUsers();
@@ -134,36 +138,6 @@ export class NativeFormComponent implements OnInit {
     }
   }
 
-  private parseAndSetLocation(response: LongLatResponse) {
-    try {
-      // 解析经度
-      const longitudeStr = response.longitude;
-      const longitudeParts = this.parseCoordinate(longitudeStr);
-      this.native.location.longitude_degree = longitudeParts.degree;
-      this.native.location.longitude_minute = longitudeParts.minute;
-      this.native.location.longitude_second = longitudeParts.second;
-      this.native.location.is_east = longitudeParts.isPositive;
-
-      // 解析纬度
-      const latitudeStr = response.latitude;
-      const latitudeParts = this.parseCoordinate(latitudeStr);
-      this.native.location.latitude_degree = latitudeParts.degree;
-      this.native.location.latitude_minute = latitudeParts.minute;
-      this.native.location.latitude_second = latitudeParts.second;
-      this.native.location.is_north = latitudeParts.isPositive;
-
-      this.alerts.push({
-        kind: AlertKind.SUCCESS,
-        message: `成功获取 ${response.name} 的地理位置信息`,
-      });
-    } catch (e: any) {
-      this.alerts.push({
-        kind: AlertKind.DANGER,
-        message: '解析地理位置数据失败: ' + (e.message || '未知错误'),
-      });
-    }
-  }
-
   private parseCoordinate(coordinateStr: string): {
     degree: number;
     minute: number;
@@ -197,9 +171,7 @@ export class NativeFormComponent implements OnInit {
 
     // 如果是编辑已锁定的记录，只验证描述和锁定状态
     if (this.native.id > 0 && this.native.lock) {
-      // 对于已锁定的记录，只允许更新描述和锁定状态
-      // 其他字段保持原值，不需要验证
-      this.activeModal.close(this.native);
+      this.executeSave();
       return;
     }
 
@@ -218,7 +190,100 @@ export class NativeFormComponent implements OnInit {
       return;
     }
 
-    this.activeModal.close(this.native);
+    this.executeSave();
+  }
+
+  private executeSave() {
+    if (this.isSubmitting) {
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    if (this.native.id === 0) {
+      this.addHoroscope();
+    } else {
+      this.updateHoroscope();
+    }
+  }
+
+  private addHoroscope() {
+    const request: HoroscopeRequest = {
+      name: this.native.name,
+      gender: this.native.gender,
+      birth_year: this.native.birth_year,
+      birth_month: this.native.birth_month,
+      birth_day: this.native.birth_day,
+      birth_hour: this.native.birth_hour,
+      birth_minute: this.native.birth_minute,
+      birth_second: this.native.birth_second,
+      time_zone_offset: this.native.time_zone_offset,
+      is_dst: this.native.is_dst,
+      location: {
+        ...this.native.location,
+      },
+      description: this.native.description,
+      lock: this.native.lock,
+    };
+
+    this.apiService.addHoroscope(request).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.activeModal.close('success');
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        let message = '保存失败！';
+        if (error.error?.error) {
+          message += error.error.error;
+        }
+        this.alerts.push({
+          kind: AlertKind.DANGER,
+          message,
+        });
+      },
+    });
+  }
+
+  private updateHoroscope() {
+    const original = this.originalNative;
+    const current = this.native;
+    const isLocked = original?.lock ?? false;
+
+    const request: UpdateHoroscopeRequest = {
+      name: isLocked ? null : (current.name === original?.name ? null : current.name),
+      gender: isLocked ? null : (current.gender === original?.gender ? null : current.gender),
+      birth_year: isLocked ? null : (current.birth_year === original?.birth_year ? null : current.birth_year),
+      birth_month: isLocked ? null : (current.birth_month === original?.birth_month ? null : current.birth_month),
+      birth_day: isLocked ? null : (current.birth_day === original?.birth_day ? null : current.birth_day),
+      birth_hour: isLocked ? null : (current.birth_hour === original?.birth_hour ? null : current.birth_hour),
+      birth_minute: isLocked ? null : (current.birth_minute === original?.birth_minute ? null : current.birth_minute),
+      birth_second: isLocked ? null : (current.birth_second === original?.birth_second ? null : current.birth_second),
+      time_zone_offset: isLocked ? null : (current.time_zone_offset === original?.time_zone_offset ? null : current.time_zone_offset),
+      is_dst: isLocked ? null : (current.is_dst === original?.is_dst ? null : current.is_dst),
+      location: isLocked ? null : this.isLocationChanged(current.location, original?.location),
+      description: current.description === original?.description ? null : current.description,
+      lock: current.lock === original?.lock ? null : current.lock,
+      user_id: this.isAdmin && current.user_id !== original?.user_id ? current.user_id : null,
+    };
+
+    this.apiService.updateHoroscope(this.native.id, request).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.activeModal.close('success');
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        let message = '更新失败！';
+        if (error.error?.error) {
+          message += error.error.error;
+        }
+        this.alerts.push({
+          kind: AlertKind.DANGER,
+          message,
+        });
+      },
+    });
   }
 
   dismiss() {
@@ -343,5 +408,38 @@ export class NativeFormComponent implements OnInit {
     }
 
     return true;
+  }
+
+  private isLocationChanged(
+    current: Location | undefined,
+    original: Location | undefined
+  ): LocationRequest | null {
+    if (!current || !original) {
+      return null;
+    }
+    if (
+      current.name === original.name &&
+      current.longitude_degree === original.longitude_degree &&
+      current.latitude_degree === original.latitude_degree &&
+      current.is_east === original.is_east &&
+      current.longitude_minute === original.longitude_minute &&
+      current.longitude_second === original.longitude_second &&
+      current.is_north === original.is_north &&
+      current.latitude_minute === original.latitude_minute &&
+      current.latitude_second === original.latitude_second
+    ) {
+      return null;
+    }
+    return {
+      name: current.name,
+      is_east: current.is_east,
+      longitude_degree: current.longitude_degree,
+      longitude_minute: current.longitude_minute,
+      longitude_second: current.longitude_second,
+      is_north: current.is_north,
+      latitude_degree: current.latitude_degree,
+      latitude_minute: current.latitude_minute,
+      latitude_second: current.latitude_second,
+    };
   }
 }

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-03-08
+
+### Changed
+
+- 重构星座管理表单保存逻辑，将 API 调用从父组件移到模态框内部
+- API 调用失败时保留用户修改的数据，允许用户修改后再次保存
+- 清理不再使用的死代码（saving 变量、add/update/cancel 方法等）
+- 添加刷新状态检查，防止在数据加载时打开编辑对话框
+
 ## [0.8.1] - 2026-02-09
 
 ### Changed

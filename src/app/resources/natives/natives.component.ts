@@ -4,15 +4,12 @@ import { Alert } from '../../interfaces/alert';
 import { PageResponser } from '../../interfaces/page';
 import {
   Horoscope,
-  HoroscopeRequest,
-  UpdateHoroscopeRequest,
   SearchHoroscopeRequest,
 } from '../../interfaces/horoscope';
-import { Location, LocationRequest } from '../../interfaces/location';
 import { ApiService } from '../../services/api/api.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AlertKind } from '../../enum/alert';
-import { DEFAULT_NATIVE, PAGE_SIZE, TIME_ZONES } from '../../utils/constant';
+import { DEFAULT_NATIVE, PAGE_SIZE } from '../../utils/constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NativeFormComponent } from './native-form/native-form.component';
 import { ConfirmModalComponent } from '../../common/confirm/confirm-modal.component';
@@ -28,7 +25,6 @@ export class NativesComponent implements OnInit {
   size = PAGE_SIZE;
   message: Array<Alert> = [];
 
-  saving = false;
   deleting = 0;
   refreshing = false; // 添加刷新状态标志
   isSearchMode = false; // 跟踪当前是否处于搜索状态
@@ -51,16 +47,6 @@ export class NativesComponent implements OnInit {
     second: undefined,
   };
 
-  // 新增/更新native
-  native: Horoscope = {
-    ...DEFAULT_NATIVE,
-    ...this.nowDate(),
-  };
-
-  zones = TIME_ZONES;
-  showForm = false; // 控制表单显示/隐藏
-
-  // 检查当前用户是否为管理员
   get isAdmin(): boolean {
     const user = this.authService.user;
     return user?.role === 'admin';
@@ -78,8 +64,8 @@ export class NativesComponent implements OnInit {
   }
 
   getNatives() {
-    if (this.saving || this.refreshing) {
-      return; // 如果正在刷新，直接返回
+    if (this.refreshing) {
+      return;
     }
 
     this.message = [];
@@ -153,8 +139,8 @@ export class NativesComponent implements OnInit {
 
   // 搜索方法
   search() {
-    if (this.saving || this.refreshing) {
-      return; // 如果正在刷新，直接返回
+    if (this.refreshing) {
+      return;
     }
 
     this.message = [];
@@ -215,6 +201,9 @@ export class NativesComponent implements OnInit {
   }
 
   edit(id: number) {
+    if (this.refreshing) {
+      return;
+    }
     const native = this.natives.data.find((n) => n.id === id);
     if (native) {
       this.openNativeForm(structuredClone(native));
@@ -290,176 +279,10 @@ export class NativesComponent implements OnInit {
     }
   }
 
-  add(native: Horoscope) {
-    this.message = [];
-    const nativeRequest: HoroscopeRequest = {
-      name: native.name,
-      gender: native.gender,
-      birth_year: native.birth_year,
-      birth_month: native.birth_month,
-      birth_day: native.birth_day,
-      birth_hour: native.birth_hour,
-      birth_minute: native.birth_minute,
-      birth_second: native.birth_second,
-      time_zone_offset: native.time_zone_offset,
-      is_dst: native.is_dst,
-      location: {
-        ...native.location,
-      },
-      description: native.description,
-      lock: native.lock,
-    };
-
-    const locationErrors = this.validateLocation(nativeRequest.location);
-    if (locationErrors.length > 0) {
-      this.message.push(...locationErrors);
-      return;
-    }
-
-    this.saving = true;
-
-    this.api
-      .addHoroscope(nativeRequest)
-      .subscribe({
-        next: () => {},
-        error: (error) => {
-          let msg = error.error.error;
-          let message = '新增记录失败！';
-          if (msg) message += msg;
-          this.message.push({
-            kind: AlertKind.DANGER,
-            message,
-          });
-        },
-      })
-      .add(() => {
-        this.saving = false;
-        this.getNatives();
-      });
-  }
-
-  update(native: Horoscope) {
-    this.message = [];
-
-    const old_native = this.natives.data.find((c) => c.id === native.id);
-    if (!old_native) {
-      const message = `你正在更新的id: ${native.id}不存在！`;
-      this.message.push({
-        kind: AlertKind.DANGER,
-        message,
-      });
-      return;
-    }
-
-    const nativeRequest: UpdateHoroscopeRequest = {
-      name: old_native.lock
-        ? null
-        : native.name === old_native.name
-        ? null
-        : native.name,
-      gender: old_native.lock
-        ? null
-        : native.gender === old_native.gender
-        ? null
-        : native.gender,
-      birth_year: old_native.lock
-        ? null
-        : native.birth_year === old_native.birth_year
-        ? null
-        : native.birth_year,
-      birth_month: old_native.lock
-        ? null
-        : native.birth_month === old_native.birth_month
-        ? null
-        : native.birth_month,
-      birth_day: old_native.lock
-        ? null
-        : native.birth_day === old_native.birth_day
-        ? null
-        : native.birth_day,
-      birth_hour: old_native.lock
-        ? null
-        : native.birth_hour === old_native.birth_hour
-        ? null
-        : native.birth_hour,
-      birth_minute: old_native.lock
-        ? null
-        : native.birth_minute === old_native.birth_minute
-        ? null
-        : native.birth_minute,
-      birth_second: old_native.lock
-        ? null
-        : native.birth_second === old_native.birth_second
-        ? null
-        : native.birth_second,
-      time_zone_offset: old_native.lock
-        ? null
-        : native.time_zone_offset === old_native.time_zone_offset
-        ? null
-        : native.time_zone_offset,
-      is_dst: old_native.lock
-        ? null
-        : native.is_dst === old_native.is_dst
-        ? null
-        : native.is_dst,
-      location: old_native.lock
-        ? null
-        : this.isLocationEqual(native.location, old_native.location)
-        ? null
-        : native.location,
-      description:
-        native.description === old_native.description
-          ? null
-          : native.description,
-      lock: native.lock === old_native.lock ? null : native.lock,
-      // 所属用户ID：只有管理员且user_id有变化时才提供
-      user_id:
-        this.isAdmin && native.user_id !== old_native.user_id
-          ? native.user_id
-          : null,
-    };
-
-    if (nativeRequest.location) {
-      const locationErrors = this.validateLocation(nativeRequest.location);
-      if (locationErrors.length > 0) {
-        this.message.push(...locationErrors);
-        return;
-      }
-    }
-
-    this.saving = true;
-
-    this.api.updateHoroscope(native.id, nativeRequest).subscribe({
-      next: () => {
-        this.saving = false;
-        if (this.isSearchMode) {
-          this.search();
-        } else {
-          this.getNatives();
-        }
-      },
-      error: (error) => {
-        let msg = error.error.error;
-        let message = '更新记录失败！';
-        if (msg) message += msg;
-        this.message.push({
-          kind: AlertKind.DANGER,
-          message,
-        });
-        this.saving = false;
-      },
-    });
-  }
-
-  cancel() {
-    this.native = {
-      ...DEFAULT_NATIVE,
-      ...this.nowDate(),
-    };
-    this.showForm = false; // 隐藏表单
-  }
-
   showAddForm() {
+    if (this.refreshing) {
+      return;
+    }
     const native = {
       ...DEFAULT_NATIVE,
       ...this.nowDate(),
@@ -497,63 +320,6 @@ export class NativesComponent implements OnInit {
     };
   }
 
-  private isLocationEqual(
-    loc1: Readonly<Location>,
-    loc2: Readonly<Location>
-  ): boolean {
-    return (
-      loc1.name === loc2.name &&
-      loc1.longitude_degree === loc2.longitude_degree &&
-      loc1.latitude_degree === loc2.latitude_degree &&
-      loc1.is_east === loc2.is_east &&
-      loc1.longitude_minute === loc2.longitude_minute &&
-      loc1.longitude_second === loc2.longitude_second &&
-      loc1.is_north === loc2.is_north &&
-      loc1.latitude_minute === loc2.latitude_minute &&
-      loc1.latitude_second === loc2.latitude_second
-    );
-  }
-
-  private validateLocation(location: Readonly<LocationRequest>): Alert[] {
-    const alerts: Alert[] = [];
-
-    // 验证城市名
-    if (location.name === '') {
-      alerts.push({
-        kind: AlertKind.DANGER,
-        message: '请输入城市名',
-      });
-    }
-
-    // 验证经度
-    const longitude =
-      location.longitude_degree +
-      location.longitude_minute / 60 +
-      location.longitude_second / 3600;
-
-    if (longitude > 180) {
-      alerts.push({
-        kind: AlertKind.DANGER,
-        message: '-180<=long<=180',
-      });
-    }
-
-    // 验证纬度
-    const latitude =
-      location.latitude_degree +
-      location.latitude_minute / 60 +
-      location.latitude_second / 3600;
-
-    if (latitude > 90) {
-      alerts.push({
-        kind: AlertKind.DANGER,
-        message: '-90<=lat<=90',
-      });
-    }
-
-    return alerts;
-  }
-
   private openNativeForm(native: Horoscope) {
     const modalRef = this.modalService.open(NativeFormComponent, {
       size: 'lg',
@@ -561,14 +327,15 @@ export class NativesComponent implements OnInit {
     });
 
     modalRef.componentInstance.native = native;
-    modalRef.componentInstance.saving = this.saving;
 
     modalRef.result.then(
-      (result: Horoscope) => {
-        if (result.id === 0) {
-          this.add(result);
-        } else {
-          this.update(result);
+      (result: string) => {
+        if (result === 'success') {
+          if (this.isSearchMode) {
+            this.search();
+          } else {
+            this.getNatives();
+          }
         }
       },
       () => {} // 取消时不做任何处理
