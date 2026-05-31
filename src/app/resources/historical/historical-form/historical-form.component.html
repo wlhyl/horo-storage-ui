@@ -1,0 +1,282 @@
+<div class="modal-header border-0 pb-0">
+  <div class="w-100 text-center">
+    <i class="bi bi-clock-history" style="font-size:2rem;color:#1765d5;"></i>
+    <h4 class="modal-title fw-bold mt-2 mb-0">{{ horoscope.id==0? "添加古代星盘":"编辑古代星盘" }}</h4>
+  </div>
+  <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" aria-label="Close" (click)="dismiss()"></button>
+</div>
+
+<app-alert [(alerts)]="alerts"></app-alert>
+
+<div class="modal-body pt-0">
+  <!-- 基本信息 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">基本信息</div>
+    <div class="row mb-3">
+      <label for="name" class="col-2 col-form-label">姓名</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="name" [(ngModel)]="horoscope.name" name="name" [disabled]="isLocked" />
+      </div>
+      <label class="col-2 col-form-label">性别</label>
+      <div class="col-4">
+        <select class="form-select" [(ngModel)]="horoscope.gender" name="gender" [disabled]="isLocked">
+          <option [ngValue]="true">男</option>
+          <option [ngValue]="false">女</option>
+          <option [ngValue]="null">未知</option>
+        </select>
+      </div>
+    </div>
+    @if (isAdmin) {
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">所属用户</label>
+        <div class="col-10">
+          <select class="form-select" [(ngModel)]="horoscope.user_id" name="user_id" [disabled]="isLocked">
+            @for (user of users; track user) {
+              <option [ngValue]="user.id">{{user.username}} ({{user.role}})</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 时间信息 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">时间信息</div>
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="input-group">
+          <input type="number" class="form-control" id="year" [(ngModel)]="horoscope.year" name="year" placeholder="年" [disabled]="isLocked">
+          <span class="input-group-text">年</span>
+          <input type="number" class="form-control" id="month" [(ngModel)]="horoscope.month" name="month" placeholder="月" min="1" max="12" [disabled]="isLocked">
+          <span class="input-group-text">月</span>
+          <input type="number" class="form-control" id="day" [(ngModel)]="horoscope.day" name="day" placeholder="日" min="1" max="31" [disabled]="isLocked">
+          <span class="input-group-text">日</span>
+        </div>
+        <div class="input-group mt-2">
+          <input type="number" class="form-control" id="hour" [(ngModel)]="horoscope.hour" name="hour" placeholder="时" min="0" max="23" [disabled]="isLocked">
+          <span class="input-group-text">时</span>
+          <input type="number" class="form-control" id="minute" [(ngModel)]="horoscope.minute" name="minute" placeholder="分" min="0" max="59" [disabled]="isLocked">
+          <span class="input-group-text">分</span>
+          <input type="number" class="form-control" id="second" [(ngModel)]="horoscope.second" name="second" placeholder="秒" min="0" max="59" [disabled]="isLocked">
+          <span class="input-group-text">秒</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">儒略历</label>
+      <div class="col-4 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="is_julian" [(ngModel)]="horoscope.is_julian" name="is_julian" [disabled]="isLocked">
+        <label class="form-check-label mb-0" for="is_julian">使用儒略历</label>
+      </div>
+      <label class="col-2 col-form-label">时区</label>
+      <div class="col-4">
+        <select class="form-select" id="timezone" [(ngModel)]="horoscope.time_zone_offset" name="timezone" [disabled]="isLocked">
+          <option [ngValue]="null">--</option>
+          @for (item of zones; track item) {
+            <option [ngValue]="item">
+              @switch (true) {
+                @case (item === 0) { 0时区 }
+                @case (item < 0) { 西{{-item}}区 }
+                @case (item > 0) { 东{{item}}区 }
+              }
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">夏令时</label>
+      <div class="col-4 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="is_dst" [(ngModel)]="horoscope.is_dst" name="is_dst" [disabled]="isLocked">
+        <label class="form-check-label mb-0" for="is_dst">启用夏令时</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 地理位置 -->
+  <div class="form-section mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="section-title mb-0">地理位置（可选）</div>
+      @if (horoscope.location) {
+        <button class="btn btn-sm btn-outline-danger" type="button" (click)="horoscope.location = null" [disabled]="isLocked">
+          <i class="bi bi-x-lg me-1"></i>移除地理位置
+        </button>
+      } @else {
+        <button class="btn btn-sm btn-outline-primary" type="button" (click)="initLocation()" [disabled]="isLocked">
+          <i class="bi bi-plus-lg me-1"></i>添加地理位置
+        </button>
+      }
+    </div>
+    @if (horoscope.location) {
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">城市</label>
+        <div class="col-10">
+          <input type="text" class="form-control" id="city" [(ngModel)]="horoscope.location.name" name="city" [disabled]="isLocked">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">经度</label>
+        <div class="col-10">
+          <div class="input-group">
+            <input type="number" class="form-control" id="longitude_degree" [(ngModel)]="horoscope.location.longitude_degree" name="longitude_degree" min="0" max="180" [disabled]="isLocked">
+            <span class="input-group-text">度</span>
+            <input type="number" class="form-control" id="longitude_minute" [(ngModel)]="horoscope.location.longitude_minute" name="longitude_minute" min="0" max="59" [disabled]="isLocked">
+            <span class="input-group-text">分</span>
+            <input type="number" class="form-control" id="longitude_second" [(ngModel)]="horoscope.location.longitude_second" name="longitude_second" min="0" max="59" [disabled]="isLocked">
+            <span class="input-group-text">秒</span>
+            <div class="input-group-text">
+              <input class="form-check-input mt-0" type="checkbox" id="is_east" [(ngModel)]="horoscope.location.is_east" name="is_east" [disabled]="isLocked">
+              <label class="form-check-label ms-2" for="is_east">东经</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">纬度</label>
+        <div class="col-10">
+          <div class="input-group">
+            <input type="number" class="form-control" id="latitude_degree" [(ngModel)]="horoscope.location.latitude_degree" name="latitude_degree" min="0" max="90" [disabled]="isLocked">
+            <span class="input-group-text">度</span>
+            <input type="number" class="form-control" id="latitude_minute" [(ngModel)]="horoscope.location.latitude_minute" name="latitude_minute" min="0" max="59" [disabled]="isLocked">
+            <span class="input-group-text">分</span>
+            <input type="number" class="form-control" id="latitude_second" [(ngModel)]="horoscope.location.latitude_second" name="latitude_second" min="0" max="59" [disabled]="isLocked">
+            <span class="input-group-text">秒</span>
+            <div class="input-group-text">
+              <input class="form-check-input mt-0" type="checkbox" id="is_north" [(ngModel)]="horoscope.location.is_north" name="is_north" [disabled]="isLocked">
+              <label class="form-check-label ms-2" for="is_north">北纬</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 宫位信息 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">宫位信息</div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">宫位制</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="house_system" [(ngModel)]="horoscope.house_system" name="house_system" placeholder="如 Regiomontanus" [disabled]="isLocked">
+      </div>
+    </div>
+    <div class="row mb-2">
+      <label class="col-2 col-form-label">宫头</label>
+      <div class="col-10">
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width:60px;">宫位</th>
+                <th>度</th>
+                <th>分</th>
+                <th>秒</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cusp of horoscope.house_cusps; track cusp; let i = $index) {
+                <tr>
+                  <td class="text-center">{{cusp.house_number}}</td>
+                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_degree" name="cusp_deg_{{i}}" min="0" max="29" [disabled]="isLocked"></td>
+                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_minute" name="cusp_min_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
+                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_second" name="cusp_sec_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 行星位置 -->
+  <div class="form-section mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="section-title mb-0">行星位置</div>
+      <button class="btn btn-sm btn-outline-primary" (click)="addPlanetPosition()" [disabled]="isLocked">
+        <i class="bi bi-plus-lg me-1"></i>添加行星
+      </button>
+    </div>
+    @for (planet of horoscope.planet_positions; track planet; let i = $index) {
+      <div class="planet-row border rounded p-2 mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="fw-medium">行星 #{{i + 1}}</div>
+          <button class="btn btn-sm btn-outline-danger" (click)="removePlanetPosition(i)" [disabled]="isLocked">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+        <div class="row g-2 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label mb-1 small">行星名</label>
+            <select class="form-select form-select-sm" [(ngModel)]="planet.planet_name" name="planet_name_{{i}}" [disabled]="isLocked">
+              @for (pn of planetNames; track pn) {
+                <option [ngValue]="pn.value">{{pn.label}}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label mb-1 small">黄经</label>
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control" [(ngModel)]="planet.longitude_degree" name="pl_deg_{{i}}" min="0" max="29" [disabled]="isLocked">
+              <span class="input-group-text">度</span>
+              <input type="number" class="form-control" [(ngModel)]="planet.longitude_minute" name="pl_min_{{i}}" min="0" max="59" [disabled]="isLocked">
+              <span class="input-group-text">分</span>
+              <input type="number" class="form-control" [(ngModel)]="planet.longitude_second" name="pl_sec_{{i}}" min="0" max="59" [disabled]="isLocked">
+              <span class="input-group-text">秒</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label mb-1 small">黄纬</label>
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control" [(ngModel)]="planet.latitude_degree" name="lat_deg_{{i}}" min="0" max="89" [disabled]="isLocked">
+              <span class="input-group-text">度</span>
+              <input type="number" class="form-control" [(ngModel)]="planet.latitude_minute" name="lat_min_{{i}}" min="0" max="59" [disabled]="isLocked">
+              <span class="input-group-text">分</span>
+              <input type="number" class="form-control" [(ngModel)]="planet.latitude_second" name="lat_sec_{{i}}" min="0" max="59" [disabled]="isLocked">
+              <span class="input-group-text">秒</span>
+              <div class="input-group-text">
+                <input class="form-check-input mt-0" type="checkbox" [(ngModel)]="planet.latitude_north" name="lat_north_{{i}}" [disabled]="isLocked">
+                <label class="form-check-label ms-1 small">北</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 描述 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">描述</div>
+    <div class="row">
+      <label for="description" class="col-2 col-form-label">描述</label>
+      <div class="col-10">
+        <textarea class="form-control" id="description" rows="2" [(ngModel)]="horoscope.description" name="description"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 锁定状态 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">锁定状态</div>
+    <div class="row">
+      <label class="col-2 col-form-label">锁定记录</label>
+      <div class="col-10 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="lock" [(ngModel)]="horoscope.lock" name="lock">
+        <label class="form-check-label mb-0" for="lock">（锁定后只能修改描述和锁定状态）</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-primary px-5 me-2" (click)="save()" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        <span class="spinner-border spinner-border-sm"></span> 保存中...
+      } @else {
+        <span>保存</span>
+      }
+    </button>
+    <button class="btn btn-outline-secondary px-4" (click)="dismiss()" [disabled]="isSubmitting">取消</button>
+  </div>
+</div>

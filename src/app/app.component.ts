@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
     Home: `${Path.Resource}/${ResourcePath.Home}`,
     Native: `${Path.Resource}/${ResourcePath.Native}`,
     User: `${Path.Resource}/${ResourcePath.User}`,
+    Historical: `${Path.Resource}/${ResourcePath.Historical}`,
   };
 
   constructor(

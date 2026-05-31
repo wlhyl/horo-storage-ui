@@ -11,13 +11,17 @@ import { NativesComponent } from './natives/natives.component';
 import { UserComponent } from './user/user.component';
 import { HomeComponent } from './home/home.component';
 import { NativeFormComponent } from './natives/native-form/native-form.component';
+import { HistoricalComponent } from './historical/historical.component';
+import { HistoricalFormComponent } from './historical/historical-form/historical-form.component';
 
 @NgModule({
   declarations: [
     NativesComponent, 
     UserComponent, 
     HomeComponent,
-    NativeFormComponent
+    NativeFormComponent,
+    HistoricalComponent,
+    HistoricalFormComponent
   ],
   imports: [
     CommonModule,

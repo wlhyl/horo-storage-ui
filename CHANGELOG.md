@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-06-04
+
+### Added
+
+- 增加古代星盘管理功能，支持古代星盘记录的增删改查
+
+### Changed
+
+- 提取共享的 buildSearchParams 工具函数，星座管理和古代星盘复用
+- 提取共享的 getApiErrorMessage 工具函数，统一 API 错误处理
+
 ## [0.9.0] - 2026-03-08
 
 ### Changed

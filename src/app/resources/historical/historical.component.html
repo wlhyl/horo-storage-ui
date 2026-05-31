@@ -1,0 +1,102 @@
+<div class="historical-bg">
+  <div class="historical-card card shadow mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="fw-bold fs-5"><i class="bi bi-clock-history me-2"></i>古代星盘</div>
+      <div class="btn-group">
+        <button class="btn btn-primary" (click)="showAddForm()" [disabled]="refreshing">
+          <i class="bi bi-plus-lg me-1"></i>添加记录
+        </button>
+        <button class="btn btn-outline-secondary" (click)="getHoroscopes()" [disabled]="refreshing">
+          <i class="bi" [class.bi-arrow-clockwise]="!refreshing" [class.bi-arrow-clockwise-spin]="refreshing"></i>
+          {{ refreshing ? '刷新中...' : '刷新' }}
+        </button>
+      </div>
+    </div>
+    <app-alert [(alerts)]="message"></app-alert>
+
+    <div class="search-form mb-3">
+      <form (ngSubmit)="search()">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-2">
+            <input type="text" id="name" class="form-control" [(ngModel)]="searchParams.name" name="name" placeholder="姓名">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="year" class="form-control" [(ngModel)]="searchParams.year" name="year" placeholder="年" min="1900" max="2100">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="month" class="form-control" [(ngModel)]="searchParams.month" name="month" placeholder="月" min="1" max="12">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="day" class="form-control" [(ngModel)]="searchParams.day" name="day" placeholder="日" min="1" max="31">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="hour" class="form-control" [(ngModel)]="searchParams.hour" name="hour" placeholder="时" min="0" max="23">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="minute" class="form-control" [(ngModel)]="searchParams.minute" name="minute" placeholder="分" min="0" max="59">
+          </div>
+          <div class="col-md-1">
+            <input type="number" id="second" class="form-control" [(ngModel)]="searchParams.second" name="second" placeholder="秒" min="0" max="59">
+          </div>
+          <div class="col-md-3">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary" [disabled]="refreshing">
+                <i class="bi bi-search me-1"></i>搜索
+              </button>
+              <button type="button" class="btn btn-secondary" [disabled]="!isSearchMode" (click)="resetSearch()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>重置
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="d-none d-md-table-cell">ID</th>
+            <th>姓名</th>
+            <th class="d-none d-sm-table-cell">性别</th>
+            <th>时间</th>
+            <th class="d-none d-lg-table-cell">儒略历</th>
+            <th class="d-none d-lg-table-cell">宫位制</th>
+            <th class="d-none d-xl-table-cell">描述</th>
+            <th class="d-none d-xl-table-cell">创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (h of horoscopes.data; track h) {
+            <tr>
+              <td class="d-none d-md-table-cell">{{h.id}}</td>
+              <td><span class="edit" (click)="edit(h.id)">{{h.name}}</span></td>
+              <td class="d-none d-sm-table-cell">{{formatGender(h.gender)}}</td>
+              <td>{{formatTime(h)}}</td>
+              <td class="d-none d-lg-table-cell">{{h.is_julian ? '是' : (h.is_julian === false ? '否' : '--')}}</td>
+              <td class="d-none d-lg-table-cell">{{h.house_system || '--'}}</td>
+              <td class="d-none d-xl-table-cell">{{h.description ? (h.description.length > 20 ? h.description.substring(0, 20) + '...' : h.description) : '--'}}</td>
+              <td class="d-none d-xl-table-cell">{{h.created_at}}</td>
+              <td>
+                @if (deleting==h.id) {
+                  <button class="btn btn-sm btn-danger" disabled>
+                    <span class="spinner-border spinner-border-sm"></span> 删除中...
+                  </button>
+                }
+                @if (deleting==0) {
+                  <button class="btn btn-sm btn-outline-danger" [disabled]="h.lock" (click)="delete(h.id)"><i class="bi bi-trash"></i> 删除</button>
+                }
+                @if (deleting>0 && deleting!=h.id) {
+                  <button class="btn btn-sm btn-outline-danger" disabled>等待中...</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pt-3">
+      <app-page-change [page]="page" [total]="horoscopes.total" (pageChange)="pageChange($event)"></app-page-change>
+    </div>
+  </div>
+</div>

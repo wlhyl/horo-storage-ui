@@ -3,40 +3,39 @@ import { Title } from '@angular/platform-browser';
 import { Alert } from '../../interfaces/alert';
 import { PageResponser } from '../../interfaces/page';
 import {
-  Horoscope,
-  SearchHoroscopeRequest,
-} from '../../interfaces/horoscope';
+  HistoricalHoroscope,
+} from '../../interfaces/historical-horoscope';
+import { SearchHoroscopeRequest } from '../../interfaces/horoscope';
 import { ApiService } from '../../services/api/api.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AlertKind } from '../../enum/alert';
-import { DEFAULT_NATIVE, PAGE_SIZE } from '../../utils/constant';
+import { PAGE_SIZE, DEFAULT_HISTORICAL_HOROSCOPE } from '../../utils/constant';
 import { buildSearchParams } from '../../utils/search';
 import { getApiErrorMessage } from '../../utils/api-error/api-error';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NativeFormComponent } from './native-form/native-form.component';
+import { HistoricalFormComponent } from './historical-form/historical-form.component';
 import { ConfirmModalComponent } from '../../common/confirm/confirm-modal.component';
 
 @Component({
-  selector: 'app-natives',
-  templateUrl: './natives.component.html',
-  styleUrl: './natives.component.scss',
+  selector: 'app-historical',
+  templateUrl: './historical.component.html',
+  styleUrl: './historical.component.scss',
   standalone: false,
 })
-export class NativesComponent implements OnInit {
+export class HistoricalComponent implements OnInit {
   page = 0;
   size = PAGE_SIZE;
   message: Array<Alert> = [];
 
   deleting = 0;
-  refreshing = false; // 添加刷新状态标志
-  isSearchMode = false; // 跟踪当前是否处于搜索状态
+  refreshing = false;
+  isSearchMode = false;
 
-  natives: PageResponser<Array<Horoscope>> = {
+  horoscopes: PageResponser<Array<HistoricalHoroscope>> = {
     data: [],
     total: 0,
   };
 
-  // 搜索参数
   searchParams: SearchHoroscopeRequest = {
     page: 0,
     size: PAGE_SIZE,
@@ -60,32 +59,33 @@ export class NativesComponent implements OnInit {
     private modalService: NgbModal,
     private authService: AuthService
   ) {}
+
   ngOnInit(): void {
-    this.titleService.setTitle('天宫图列表');
-    this.getNatives();
+    this.titleService.setTitle('古代星盘列表');
+    this.getHoroscopes();
   }
 
-  getNatives() {
+  getHoroscopes() {
     if (this.refreshing) {
       return;
     }
 
     this.message = [];
-    this.refreshing = true; // 开始刷新
-    this.isSearchMode = false; // 设置为非搜索模式
+    this.refreshing = true;
+    this.isSearchMode = false;
     this.api
-      .getHoroscopes(this.page, this.size)
+      .getHistoricalHoroscopes(this.page, this.size)
       .subscribe({
-        next: (response) => (this.natives = response),
+        next: (response) => (this.horoscopes = response),
         error: (error) => {
           this.message.push({
             kind: AlertKind.DANGER,
-            message: '获取native失败！' + getApiErrorMessage(error),
+            message: '获取古代星盘失败！' + getApiErrorMessage(error),
           });
         },
       })
       .add(() => {
-        this.refreshing = false; // 结束刷新
+        this.refreshing = false;
       });
   }
 
@@ -93,7 +93,6 @@ export class NativesComponent implements OnInit {
     return buildSearchParams(this.searchParams);
   }
 
-  // 搜索方法
   search() {
     if (this.refreshing) {
       return;
@@ -101,10 +100,8 @@ export class NativesComponent implements OnInit {
 
     this.message = [];
 
-    // 过滤搜索参数，移除undefined和空字符串
     const filteredParams = this.buildSearchParams();
 
-    // 检查是否有搜索条件
     if (!filteredParams.hasSearchConditions) {
       this.message.push({
         kind: AlertKind.WARNING,
@@ -113,15 +110,14 @@ export class NativesComponent implements OnInit {
       return;
     }
 
-    this.refreshing = true; // 开始刷新
-    this.isSearchMode = true; // 设置为搜索模式
+    this.refreshing = true;
+    this.isSearchMode = true;
 
-    // 调用搜索接口
     this.api
-      .searchHoroscopes(filteredParams.params)
+      .searchHistoricalHoroscopes(filteredParams.params)
       .subscribe({
         next: (response) => {
-          this.natives = response;
+          this.horoscopes = response;
         },
         error: (error) => {
           this.message.push({
@@ -131,11 +127,10 @@ export class NativesComponent implements OnInit {
         },
       })
       .add(() => {
-        this.refreshing = false; // 结束刷新
+        this.refreshing = false;
       });
   }
 
-  // 重置搜索
   resetSearch() {
     this.searchParams = {
       page: 0,
@@ -148,24 +143,23 @@ export class NativesComponent implements OnInit {
       minute: undefined,
       second: undefined,
     };
-    // 重新加载列表
     this.page = 0;
-    this.getNatives();
+    this.getHoroscopes();
   }
 
   edit(id: number) {
     if (this.refreshing) {
       return;
     }
-    const native = this.natives.data.find((n) => n.id === id);
-    if (native) {
-      this.openNativeForm(structuredClone(native));
+    const horoscope = this.horoscopes.data.find((h) => h.id === id);
+    if (horoscope) {
+      this.openForm(structuredClone(horoscope));
     }
   }
 
   delete(id: number) {
-    const native = this.natives.data.find((n) => n.id === id);
-    if (!native) {
+    const horoscope = this.horoscopes.data.find((h) => h.id === id);
+    if (!horoscope) {
       this.message.push({
         kind: AlertKind.WARNING,
         message: '记录不存在！',
@@ -173,7 +167,7 @@ export class NativesComponent implements OnInit {
       return;
     }
 
-    if (native.lock) {
+    if (horoscope.lock) {
       this.message.push({
         kind: AlertKind.WARNING,
         message: '已锁定的记录不能删除！',
@@ -182,7 +176,7 @@ export class NativesComponent implements OnInit {
     }
 
     const modalRef = this.modalService.open(ConfirmModalComponent);
-    modalRef.componentInstance.message = `确定要删除 "${native.name}" 这条记录吗？`;
+    modalRef.componentInstance.message = `确定要删除 "${horoscope.name}" 这条记录吗？`;
 
     modalRef.result.then(
       (confirmed: boolean) => {
@@ -198,19 +192,19 @@ export class NativesComponent implements OnInit {
     this.message = [];
     this.deleting = id;
     this.api
-      .deleteHoroscope(id)
+      .deleteHistoricalHoroscope(id)
       .subscribe({
         next: () => {
           if (this.isSearchMode) {
             this.search();
           } else {
-            this.getNatives();
+            this.getHoroscopes();
           }
         },
         error: (error) => {
           this.message.push({
             kind: AlertKind.DANGER,
-            message: '删除native失败！' + getApiErrorMessage(error),
+            message: '删除古代星盘失败！' + getApiErrorMessage(error),
           });
         },
       })
@@ -219,13 +213,11 @@ export class NativesComponent implements OnInit {
 
   pageChange(page: number) {
     if (this.isSearchMode) {
-      // 搜索模式下，使用searchParams.page并调用search()
       this.searchParams.page = page;
       this.search();
     } else {
-      // 非搜索模式下，使用this.page并调用getNatives()
       this.page = page;
-      this.getNatives();
+      this.getHoroscopes();
     }
   }
 
@@ -233,50 +225,37 @@ export class NativesComponent implements OnInit {
     if (this.refreshing) {
       return;
     }
-    const native = {
-      ...DEFAULT_NATIVE,
-      ...this.nowDate(),
-    };
-    this.openNativeForm(native);
+    const horoscope = structuredClone(DEFAULT_HISTORICAL_HOROSCOPE);
+    this.openForm(horoscope);
   }
 
-  private nowDate() {
-    const t = new Date();
-    const birth_year = t.getFullYear();
-    const birth_month = t.getMonth() + 1;
-    const birth_day = t.getDate();
-    const birth_hour = t.getHours();
-    const birth_minute = t.getMinutes();
-    const birth_second = t.getSeconds();
-
-    let is_dst = false;
-    // 判断夏令时
-    let d1 = new Date(birth_year, 1, 1); // 2月1日
-    let time_zone_offset = d1.getTimezoneOffset() / -60;
-    // let d2 = new Date(this.horo.year,7,1);
-    if (t.getTimezoneOffset() != d1.getTimezoneOffset()) {
-      is_dst = true;
-      time_zone_offset -= 1;
-    }
-    return {
-      birth_year,
-      birth_month,
-      birth_day,
-      birth_hour,
-      birth_minute,
-      birth_second,
-      time_zone_offset,
-      is_dst,
-    };
+  formatTime(h: HistoricalHoroscope): string {
+    const parts: string[] = [];
+    if (h.year != null) parts.push(String(h.year));
+    else parts.push('----');
+    const month = h.month != null ? String(h.month).padStart(2, '0') : '--';
+    const day = h.day != null ? String(h.day).padStart(2, '0') : '--';
+    parts.push(month, day);
+    const timeParts: string[] = [];
+    timeParts.push(h.hour != null ? String(h.hour).padStart(2, '0') : '--');
+    timeParts.push(h.minute != null ? String(h.minute).padStart(2, '0') : '--');
+    timeParts.push(h.second != null ? String(h.second).padStart(2, '0') : '--');
+    return parts.join('-') + ' ' + timeParts.join(':');
   }
 
-  private openNativeForm(native: Horoscope) {
-    const modalRef = this.modalService.open(NativeFormComponent, {
+  formatGender(gender: boolean | null): string {
+    if (gender === true) return '男';
+    if (gender === false) return '女';
+    return '未知';
+  }
+
+  private openForm(horoscope: HistoricalHoroscope) {
+    const modalRef = this.modalService.open(HistoricalFormComponent, {
       size: 'lg',
       backdrop: 'static',
     });
 
-    modalRef.componentInstance.native = native;
+    modalRef.componentInstance.horoscope = horoscope;
 
     modalRef.result.then(
       (result: string) => {
@@ -284,11 +263,11 @@ export class NativesComponent implements OnInit {
           if (this.isSearchMode) {
             this.search();
           } else {
-            this.getNatives();
+            this.getHoroscopes();
           }
         }
       },
-      () => {} // 取消时不做任何处理
+      () => {}
     );
   }
 }

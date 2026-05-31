@@ -9,6 +9,11 @@ import {
   HoroscopeRequest,
   UpdateHoroscopeRequest,
 } from '../../interfaces/horoscope';
+import {
+  HistoricalHoroscope,
+  HistoricalHoroscopeRequest,
+  UpdateHistoricalHoroscopeRequest,
+} from '../../interfaces/historical-horoscope';
 import { PageResponser } from '../../interfaces/page';
 import { LongLatResponse } from '../../interfaces/location';
 
@@ -95,5 +100,72 @@ export class ApiService {
     return this.http.get<Array<User>>(`${this.url}/users`, {
       headers: { ...this.http_options, token: this.user.token },
     });
+  }
+
+  getHistoricalHoroscopes(
+    page: number,
+    size: number
+  ): Observable<PageResponser<Array<HistoricalHoroscope>>> {
+    return this.http.get<PageResponser<Array<HistoricalHoroscope>>>(
+      `${this.url}/historical-horoscopes?page=${page}&size=${size}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  getHistoricalHoroscopeById(id: number): Observable<HistoricalHoroscope> {
+    return this.http.get<HistoricalHoroscope>(
+      `${this.url}/historical-horoscopes/${id}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  addHistoricalHoroscope(
+    data: HistoricalHoroscopeRequest
+  ): Observable<HistoricalHoroscope> {
+    return this.http.post<HistoricalHoroscope>(
+      `${this.url}/historical-horoscopes`,
+      data,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  updateHistoricalHoroscope(
+    id: number,
+    data: UpdateHistoricalHoroscopeRequest
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${this.url}/historical-horoscopes/${id}`,
+      data,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  deleteHistoricalHoroscope(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.url}/historical-horoscopes/${id}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  searchHistoricalHoroscopes(
+    params: any
+  ): Observable<PageResponser<Array<HistoricalHoroscope>>> {
+    return this.http.get<PageResponser<Array<HistoricalHoroscope>>>(
+      `${this.url}/historical-horoscopes/search`,
+      {
+        params,
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
   }
 }
