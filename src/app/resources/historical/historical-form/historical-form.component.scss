@@ -68,11 +68,19 @@
 
 .planet-row {
   background: #fff;
+
+  .input-group-sm .form-control[type="number"] {
+    min-width: 3.5rem;
+  }
 }
 
 .planet-row .table-sm th,
 .planet-row .table-sm td {
   padding: 4px 6px;
+}
+
+.table .form-control-sm[type="number"] {
+  min-width: 3.5rem;
 }
 
 @media (max-width: 480px) {

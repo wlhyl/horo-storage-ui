@@ -178,7 +178,7 @@
               @for (cusp of horoscope.house_cusps; track cusp; let i = $index) {
                 <tr>
                   <td class="text-center">{{cusp.house_number}}</td>
-                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_degree" name="cusp_deg_{{i}}" min="0" max="29" [disabled]="isLocked"></td>
+                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_degree" name="cusp_deg_{{i}}" min="0" max="359" [disabled]="isLocked"></td>
                   <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_minute" name="cusp_min_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
                   <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_second" name="cusp_sec_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
                 </tr>
@@ -215,10 +215,10 @@
               }
             </select>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-9">
             <label class="form-label mb-1 small">黄经</label>
-            <div class="input-group input-group-sm">
-              <input type="number" class="form-control" [(ngModel)]="planet.longitude_degree" name="pl_deg_{{i}}" min="0" max="29" [disabled]="isLocked">
+            <div class="input-group input-group-sm flex-nowrap">
+              <input type="number" class="form-control" [(ngModel)]="planet.longitude_degree" name="pl_deg_{{i}}" min="0" max="359" [disabled]="isLocked">
               <span class="input-group-text">度</span>
               <input type="number" class="form-control" [(ngModel)]="planet.longitude_minute" name="pl_min_{{i}}" min="0" max="59" [disabled]="isLocked">
               <span class="input-group-text">分</span>
@@ -226,9 +226,9 @@
               <span class="input-group-text">秒</span>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-9 offset-md-3">
             <label class="form-label mb-1 small">黄纬</label>
-            <div class="input-group input-group-sm">
+            <div class="input-group input-group-sm flex-nowrap">
               <input type="number" class="form-control" [(ngModel)]="planet.latitude_degree" name="lat_deg_{{i}}" min="0" max="89" [disabled]="isLocked">
               <span class="input-group-text">度</span>
               <input type="number" class="form-control" [(ngModel)]="planet.latitude_minute" name="lat_min_{{i}}" min="0" max="59" [disabled]="isLocked">
