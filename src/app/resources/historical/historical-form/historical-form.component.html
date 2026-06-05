@@ -227,6 +227,10 @@
                 <option [ngValue]="pn.value">{{pn.label}}</option>
               }
             </select>
+            <div class="form-check mt-1">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="planet.is_retrograde" name="is_retrograde_{{i}}" [disabled]="isLocked">
+              <label class="form-check-label small">逆行</label>
+            </div>
           </div>
           <div class="col-md-9">
             <label class="form-label mb-1 small">黄经</label>

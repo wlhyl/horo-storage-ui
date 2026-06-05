@@ -16,6 +16,7 @@ export interface PlanetPosition {
   latitude_minute: number;
   latitude_second: number;
   latitude_north: boolean;
+  is_retrograde: boolean;
 }
 
 export interface HistoricalHoroscope {

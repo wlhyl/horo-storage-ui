@@ -465,7 +465,8 @@ export class HistoricalFormComponent implements OnInit {
         c.latitude_degree !== original[i].latitude_degree ||
         c.latitude_minute !== original[i].latitude_minute ||
         c.latitude_second !== original[i].latitude_second ||
-        c.latitude_north !== original[i].latitude_north,
+        c.latitude_north !== original[i].latitude_north ||
+        c.is_retrograde !== original[i].is_retrograde,
     );
     if (!changed) return undefined;
     return current;

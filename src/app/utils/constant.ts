@@ -86,6 +86,7 @@ export const DEFAULT_PLANET_POSITION: PlanetPosition = {
   latitude_minute: 0,
   latitude_second: 0,
   latitude_north: true,
+  is_retrograde: false,
 };
 
 export const DEFAULT_HISTORICAL_HOROSCOPE: HistoricalHoroscope = {
