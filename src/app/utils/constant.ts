@@ -42,6 +42,21 @@ export const DEFAULT_NATIVE: Horoscope = {
 export const PAGE_SIZE = 10;
 export const TIME_ZONES = [...Array(25)].map((_, i) => i - 12).reverse();
 
+export const ZODIAC_SIGNS = [
+  { value: 0, label: '白羊' },
+  { value: 1, label: '金牛' },
+  { value: 2, label: '双子' },
+  { value: 3, label: '巨蟹' },
+  { value: 4, label: '狮子' },
+  { value: 5, label: '处女' },
+  { value: 6, label: '天秤' },
+  { value: 7, label: '天蝎' },
+  { value: 8, label: '射手' },
+  { value: 9, label: '摩羯' },
+  { value: 10, label: '水瓶' },
+  { value: 11, label: '双鱼' },
+];
+
 export const PLANET_NAMES = [
   { value: 'Saturn', label: '土星' },
   { value: 'Jupiter', label: '木星' },

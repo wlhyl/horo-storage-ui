@@ -160,6 +160,11 @@
       <div class="col-4">
         <input type="text" class="form-control" id="house_system" [(ngModel)]="horoscope.house_system" name="house_system" placeholder="如 Regiomontanus" [disabled]="isLocked">
       </div>
+      <label class="col-2 col-form-label">对宫联动</label>
+      <div class="col-4 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="cusp_linkage" [(ngModel)]="cuspLinkage" name="cusp_linkage" [disabled]="isLocked">
+        <label class="form-check-label mb-0" for="cusp_linkage">自动计算对宫</label>
+      </div>
     </div>
     <div class="row mb-2">
       <label class="col-2 col-form-label">宫头</label>
@@ -169,6 +174,7 @@
             <thead class="table-light">
               <tr>
                 <th style="width:60px;">宫位</th>
+                <th>星座</th>
                 <th>度</th>
                 <th>分</th>
                 <th>秒</th>
@@ -178,9 +184,16 @@
               @for (cusp of horoscope.house_cusps; track cusp; let i = $index) {
                 <tr>
                   <td class="text-center">{{cusp.house_number}}</td>
-                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_degree" name="cusp_deg_{{i}}" min="0" max="359" [disabled]="isLocked"></td>
-                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_minute" name="cusp_min_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
-                  <td><input type="number" class="form-control form-control-sm" [(ngModel)]="cusp.longitude_second" name="cusp_sec_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
+                  <td>
+                    <select class="form-select form-select-sm" [ngModel]="getSignIndex(cusp.longitude_degree)" (ngModelChange)="onCuspSignChange(cusp, $event)" name="cusp_sign_{{i}}" [disabled]="isLocked">
+                      @for (sign of zodiacSigns; track sign) {
+                        <option [ngValue]="sign.value">{{sign.label}}</option>
+                      }
+                    </select>
+                  </td>
+                  <td><input type="number" class="form-control form-control-sm" [ngModel]="getSignDegree(cusp.longitude_degree)" (ngModelChange)="onCuspSignDegreeChange(cusp, $event)" name="cusp_deg_{{i}}" min="0" max="29" [disabled]="isLocked"></td>
+                  <td><input type="number" class="form-control form-control-sm" [ngModel]="cusp.longitude_minute" (ngModelChange)="cusp.longitude_minute=$event; onCuspMinuteChange(cusp)" name="cusp_min_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
+                  <td><input type="number" class="form-control form-control-sm" [ngModel]="cusp.longitude_second" (ngModelChange)="cusp.longitude_second=$event; onCuspSecondChange(cusp)" name="cusp_sec_{{i}}" min="0" max="59" [disabled]="isLocked"></td>
                 </tr>
               }
             </tbody>
@@ -218,7 +231,12 @@
           <div class="col-md-9">
             <label class="form-label mb-1 small">黄经</label>
             <div class="input-group input-group-sm flex-nowrap">
-              <input type="number" class="form-control" [(ngModel)]="planet.longitude_degree" name="pl_deg_{{i}}" min="0" max="359" [disabled]="isLocked">
+              <select class="form-select" [ngModel]="getSignIndex(planet.longitude_degree)" (ngModelChange)="onPlanetSignChange(planet, $event)" name="pl_sign_{{i}}" [disabled]="isLocked">
+                @for (sign of zodiacSigns; track sign) {
+                  <option [ngValue]="sign.value">{{sign.label}}</option>
+                }
+              </select>
+              <input type="number" class="form-control" [ngModel]="getSignDegree(planet.longitude_degree)" (ngModelChange)="onPlanetSignDegreeChange(planet, $event)" name="pl_deg_{{i}}" min="0" max="29" [disabled]="isLocked">
               <span class="input-group-text">度</span>
               <input type="number" class="form-control" [(ngModel)]="planet.longitude_minute" name="pl_min_{{i}}" min="0" max="59" [disabled]="isLocked">
               <span class="input-group-text">分</span>

@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.11.0] 2026-06-06
+
+### Added
+
+- 古代星盘表单：黄经输入支持基于星座的输入方式，选择星座+星座内度数（0-29），替代原来的绝对度数（0-359）输入
+- 古代星盘表单：宫头输入增加对宫联动功能，修改任一宫头时自动计算对宫（+180°），默认开启，可手动关闭
 
 ### Changed
 
-- 古代星盘表单：黄经度的最大值从 29 改为 359（使用相对于白羊座 0 度的绝对黄经）
-- 古代星盘表单：宫头度的最大值从 29 改为 359
 - 古代星盘表单：优化行星位置黄经、黄纬输入框布局，改为两行排列，避免内容换行和输入值显示不全
 
 ## [0.10.0] - 2026-06-04

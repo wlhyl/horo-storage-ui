@@ -11,6 +11,7 @@ import {
   TIME_ZONES,
   PLANET_NAMES,
   DEFAULT_PLANET_POSITION,
+  ZODIAC_SIGNS,
 } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
@@ -33,6 +34,8 @@ export class HistoricalFormComponent implements OnInit {
   @Input() horoscope!: HistoricalHoroscope;
   zones = TIME_ZONES;
   planetNames = PLANET_NAMES;
+  zodiacSigns = ZODIAC_SIGNS;
+  cuspLinkage = true;
   alerts: Alert[] = [];
 
   users: User[] = [];
@@ -107,6 +110,54 @@ export class HistoricalFormComponent implements OnInit {
   getPlanetLabel(planetName: string): string {
     const found = PLANET_NAMES.find((p) => p.value === planetName);
     return found ? found.label : planetName;
+  }
+
+  getSignIndex(degree: number): number {
+    return Math.floor(degree / 30) % 12;
+  }
+
+  getSignDegree(degree: number): number {
+    return degree % 30;
+  }
+
+  toAbsoluteDegree(signIndex: number, signDegree: number): number {
+    return signIndex * 30 + signDegree;
+  }
+
+  onPlanetSignChange(planet: PlanetPosition, signIndex: number): void {
+    planet.longitude_degree = this.toAbsoluteDegree(signIndex, this.getSignDegree(planet.longitude_degree));
+  }
+
+  onPlanetSignDegreeChange(planet: PlanetPosition, signDegree: number): void {
+    planet.longitude_degree = this.toAbsoluteDegree(this.getSignIndex(planet.longitude_degree), signDegree);
+  }
+
+  onCuspSignChange(cusp: HouseCusp, signIndex: number): void {
+    cusp.longitude_degree = this.toAbsoluteDegree(signIndex, this.getSignDegree(cusp.longitude_degree));
+    this.linkOppositeCusp(cusp);
+  }
+
+  onCuspSignDegreeChange(cusp: HouseCusp, signDegree: number): void {
+    cusp.longitude_degree = this.toAbsoluteDegree(this.getSignIndex(cusp.longitude_degree), signDegree);
+    this.linkOppositeCusp(cusp);
+  }
+
+  onCuspMinuteChange(cusp: HouseCusp): void {
+    this.linkOppositeCusp(cusp);
+  }
+
+  onCuspSecondChange(cusp: HouseCusp): void {
+    this.linkOppositeCusp(cusp);
+  }
+
+  private linkOppositeCusp(cusp: HouseCusp): void {
+    if (!this.cuspLinkage) return;
+    const oppositeNum = ((cusp.house_number - 1 + 6) % 12) + 1;
+    const oppositeCusp = this.horoscope.house_cusps.find(c => c.house_number === oppositeNum);
+    if (!oppositeCusp) return;
+    oppositeCusp.longitude_degree = (cusp.longitude_degree + 180) % 360;
+    oppositeCusp.longitude_minute = cusp.longitude_minute;
+    oppositeCusp.longitude_second = cusp.longitude_second;
   }
 
   save() {
