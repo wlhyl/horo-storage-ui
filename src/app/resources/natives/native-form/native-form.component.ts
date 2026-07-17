@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Horoscope, HoroscopeRequest, UpdateHoroscopeRequest } from '../../../interfaces/horoscope';
 import { TIME_ZONES } from '../../../utils/constant';
@@ -13,6 +13,7 @@ import { User } from '../../../interfaces/user';
   selector: 'app-native-form',
   templateUrl: './native-form.component.html',
   styleUrls: ['./native-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NativeFormComponent implements OnInit {

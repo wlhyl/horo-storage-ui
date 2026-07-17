@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Alert } from '../../interfaces/alert';
 import { PageResponser } from '../../interfaces/page';
@@ -20,6 +20,7 @@ import { ConfirmModalComponent } from '../../common/confirm/confirm-modal.compon
   selector: 'app-historical',
   templateUrl: './historical.component.html',
   styleUrl: './historical.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class HistoricalComponent implements OnInit {

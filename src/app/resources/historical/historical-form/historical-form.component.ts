@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   HistoricalHoroscope,
@@ -28,6 +28,7 @@ import { getApiErrorMessage } from '../../../utils/api-error/api-error';
   selector: 'app-historical-form',
   templateUrl: './historical-form.component.html',
   styleUrls: ['./historical-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class HistoricalFormComponent implements OnInit {

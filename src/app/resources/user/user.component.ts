@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Alert } from '../../interfaces/alert';
 import { AuthService } from '../../services/auth/auth.service';
@@ -10,6 +10,7 @@ import { UpdateUserRequest } from '../../interfaces/user';
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class UserComponent implements OnInit {

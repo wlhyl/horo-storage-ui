@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -16,6 +16,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
       <button type="button" class="btn btn-danger" (click)="yes()">确认删除</button>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ConfirmModalComponent implements OnInit {
