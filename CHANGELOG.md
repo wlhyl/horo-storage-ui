@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] 2026-07-18
+
+### Added
+
+- 星座管理表单：出生时间输入增加中国夏令时（1986-1991）检测，当时区为东八区且日期处于夏令时实施期间时，提示用户确认是否需要勾选夏令时
+
 ## [0.12.0] 2026-06-06
 
 ### Added

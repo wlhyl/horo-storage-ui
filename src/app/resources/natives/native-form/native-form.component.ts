@@ -8,6 +8,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { Location, LocationRequest, LongLatResponse } from '../../../interfaces/location';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../interfaces/user';
+import { isInChineseDST } from '../../../utils/dst/dst';
 
 @Component({
   selector: 'app-native-form',
@@ -137,6 +138,31 @@ export class NativeFormComponent implements OnInit {
         message: '解析地理位置数据失败: ' + (e.message || '未知错误'),
       });
     }
+  }
+
+  onDateTimeChange(): void {
+    if (this.native.time_zone_offset !== 8) {
+      return;
+    }
+
+    const { birth_year, birth_month, birth_day, birth_hour, birth_minute } = this.native;
+    if (!isInChineseDST({
+      year: birth_year,
+      month: birth_month,
+      day: birth_day,
+      hour: birth_hour,
+      minute: birth_minute,
+    })) {
+      return;
+    }
+
+    // 移除已存在的 DST 提示，避免重复堆叠
+    this.alerts = this.alerts.filter((a) => !a.message.includes('处于中国夏令时'));
+
+    this.alerts.push({
+      kind: AlertKind.WARNING,
+      message: `${birth_year}年${birth_month}月${birth_day}日处于中国夏令时实施期间，请确认是否需要勾选夏令时。`,
+    });
   }
 
   private parseCoordinate(coordinateStr: string): {
