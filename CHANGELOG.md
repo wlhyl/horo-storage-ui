@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] 2026-07-22
+
+### Added
+
+- 星座管理新增盘类型（chart_type）字段，支持区分本命盘与卜卦盘
+- 星座管理新增时间精准标识（is_time_precise）字段，用于标记本命盘的出生时间是否已校对
+- 搜索支持按盘类型与时间精准标识过滤
+- 列表页用红色 H 标识卜卦盘，用绿色姓名标识已校对时间
+
 ## [0.13.0] 2026-07-18
 
 ### Added

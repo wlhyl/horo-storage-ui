@@ -44,5 +44,17 @@ export function buildSearchParams(
   processField('minute');
   processField('second');
 
+  // 盘类型：非空时计入搜索条件
+  if (searchParams.chart_type !== undefined) {
+    params.chart_type = searchParams.chart_type;
+    hasSearchConditions = true;
+  }
+
+  // 时间精准：注意 false 是有效值，需保留
+  if (searchParams.is_time_precise !== undefined) {
+    params.is_time_precise = searchParams.is_time_precise;
+    hasSearchConditions = true;
+  }
+
   return { params, hasSearchConditions };
 }

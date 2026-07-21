@@ -31,6 +31,8 @@ export const DEFAULT_NATIVE: Horoscope = {
   birth_second: 0,
   time_zone_offset: 0,
   is_dst: false,
+  chart_type: 'natal',
+  is_time_precise: false,
   location: DEFAULT_LOCATION,
   description: '',
   created_at: '',

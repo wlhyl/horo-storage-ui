@@ -30,6 +30,19 @@
         </div>
       </div>
     </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">盘类型</label>
+      <div class="col-4">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="natal" [(ngModel)]="native.chart_type" value="natal" name="chart_type" [disabled]="native.id > 0 && native.lock">
+          <label class="form-check-label" for="natal">本命盘</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="horary" [(ngModel)]="native.chart_type" value="horary" name="chart_type" [disabled]="native.id > 0 && native.lock">
+          <label class="form-check-label" for="horary">卜卦盘</label>
+        </div>
+      </div>
+    </div>
     <!-- 管理员可修改的所属用户 -->
     @if (isAdmin) {
       <div class="row mb-3">
@@ -87,6 +100,13 @@
       <div class="col-4 d-flex align-items-center">
         <input type="checkbox" class="form-check-input me-2" id="dst" [(ngModel)]="native.is_dst" name="dst" [disabled]="native.id > 0 && native.lock">
         <label class="form-check-label mb-0" for="dst">启用夏令时</label>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">时间精准</label>
+      <div class="col-10 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="is_time_precise" [(ngModel)]="native.is_time_precise" name="is_time_precise" [disabled]="native.chart_type === 'horary' || (native.id > 0 && native.lock)">
+        <label class="form-check-label mb-0" for="is_time_precise">（仅本命盘有意义，勾选表示出生时间已校对）</label>
       </div>
     </div>
   </div>

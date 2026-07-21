@@ -246,6 +246,8 @@ export class NativeFormComponent implements OnInit {
       birth_second: this.native.birth_second,
       time_zone_offset: this.native.time_zone_offset,
       is_dst: this.native.is_dst,
+      chart_type: this.native.chart_type,
+      is_time_precise: this.native.is_time_precise,
       location: {
         ...this.native.location,
       },
@@ -288,6 +290,8 @@ export class NativeFormComponent implements OnInit {
       birth_second: isLocked ? null : (current.birth_second === original?.birth_second ? null : current.birth_second),
       time_zone_offset: isLocked ? null : (current.time_zone_offset === original?.time_zone_offset ? null : current.time_zone_offset),
       is_dst: isLocked ? null : (current.is_dst === original?.is_dst ? null : current.is_dst),
+      chart_type: isLocked ? null : (current.chart_type === original?.chart_type ? null : current.chart_type),
+      is_time_precise: isLocked ? null : (current.is_time_precise === original?.is_time_precise ? null : current.is_time_precise),
       location: isLocked ? null : this.isLocationChanged(current.location, original?.location),
       description: current.description === original?.description ? null : current.description,
       lock: current.lock === original?.lock ? null : current.lock,

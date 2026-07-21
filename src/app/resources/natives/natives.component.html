@@ -39,6 +39,22 @@
           <div class="col-md-1">
             <input type="number" id="second" class="form-control" [(ngModel)]="searchParams.second" name="second" placeholder="秒" min="0" max="59">
           </div>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-2">
+            <select id="chart_type" class="form-select" [(ngModel)]="searchParams.chart_type" name="chart_type">
+              <option [ngValue]="undefined">盘类型</option>
+              <option [ngValue]="'natal'">本命盘</option>
+              <option [ngValue]="'horary'">卜卦盘</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <select id="is_time_precise" class="form-select" [(ngModel)]="searchParams.is_time_precise" name="is_time_precise">
+              <option [ngValue]="undefined">时间精准</option>
+              <option [ngValue]="true">已校正</option>
+              <option [ngValue]="false">未校正</option>
+            </select>
+          </div>
           <div class="col-md-3">
             <div class="d-flex gap-2">
               <button type="submit" class="btn btn-primary" [disabled]="refreshing">
@@ -72,7 +88,12 @@
           @for (native of natives.data; track native) {
             <tr>
               <td class="d-none d-md-table-cell">{{native.id}}</td>
-              <td><span class="edit" (click)="edit(native.id)">{{native.name}}</span></td>
+              <td>
+                @if (native.chart_type === 'horary') {
+                  <span class="horary-badge" ngbTooltip="卜卦盘">H</span>
+                }
+                <span class="edit" [class.is-precise]="native.is_time_precise" (click)="edit(native.id)">{{native.name}}</span>
+              </td>
               <td class="d-none d-sm-table-cell">{{ native.gender? "男": "女" }}</td>
               <td>{{native.birth_year}}-{{native.birth_month.toString().padStart(2, "0")}}-{{native.birth_day.toString().padStart(2, "0")}} {{native.birth_hour.toString().padStart(2, "0")}}:{{native.birth_minute.toString().padStart(2, "0")}}:{{native.birth_second.toString().padStart(2, "0")}}</td>
               <td class="d-none d-lg-table-cell">

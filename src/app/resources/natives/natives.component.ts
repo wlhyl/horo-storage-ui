@@ -48,6 +48,8 @@ export class NativesComponent implements OnInit {
     hour: undefined,
     minute: undefined,
     second: undefined,
+    chart_type: undefined,
+    is_time_precise: undefined,
   };
 
   get isAdmin(): boolean {
@@ -109,7 +111,7 @@ export class NativesComponent implements OnInit {
     if (!filteredParams.hasSearchConditions) {
       this.message.push({
         kind: AlertKind.WARNING,
-        message: '请至少输入一个搜索条件（姓名、年、月、日、时）',
+        message: '请至少输入一个搜索条件（姓名、年、月、日、时、盘类型、时间精准）',
       });
       return;
     }
@@ -148,6 +150,8 @@ export class NativesComponent implements OnInit {
       hour: undefined,
       minute: undefined,
       second: undefined,
+      chart_type: undefined,
+      is_time_precise: undefined,
     };
     // 重新加载列表
     this.page = 0;
