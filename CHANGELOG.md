@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.1] 2026-08-17
+
+### Fixed
+
+- 修复搜索后点击记录名无反应的问题：列表数据被刷新替换的瞬间点击旧记录时，现在会给出提示而不是静默失败
+- 修复快速双击记录名可能导致编辑弹窗叠加、页面被遮罩卡住的问题：编辑/删除/新增操作增加弹窗状态保护
+- 修复数据加载中点击"重置"按钮导致列表状态错乱的问题
+- 修复搜索模式下分页控件页码显示错误的问题
+- 修复删除最后一页记录后列表显示为空的问题：当前页被删空时自动回退到第一页重新加载
+
 ## [0.14.0] 2026-07-22
 
 ### Added
