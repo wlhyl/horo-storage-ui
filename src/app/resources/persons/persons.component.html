@@ -1,0 +1,71 @@
+<div class="persons-bg">
+  <div class="persons-card card shadow mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="fw-bold fs-5"><i class="bi bi-people me-2"></i>联系人管理</div>
+      <div class="btn-group">
+        <button class="btn btn-primary" (click)="showAddForm()" [disabled]="refreshing">
+          <i class="bi bi-plus-lg me-1"></i>添加记录
+        </button>
+        <button class="btn btn-outline-secondary" (click)="getPersons()" [disabled]="refreshing">
+          <i class="bi" [class.bi-arrow-clockwise]="!refreshing" [class.bi-arrow-clockwise-spin]="refreshing"></i>
+          {{ refreshing ? '刷新中...' : '刷新' }}
+        </button>
+      </div>
+    </div>
+    <app-alert [(alerts)]="message"></app-alert>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="d-none d-md-table-cell">ID</th>
+            <th>名字</th>
+            <th class="d-none d-lg-table-cell">微信号</th>
+            <th class="d-none d-lg-table-cell">微信名</th>
+            <th class="d-none d-lg-table-cell">抖音号</th>
+            <th class="d-none d-lg-table-cell">抖音名</th>
+            @if (isAdmin) {
+              <th class="d-none d-xl-table-cell">所属用户</th>
+            }
+            <th class="d-none d-xl-table-cell">创建时间</th>
+            <th class="d-none d-xl-table-cell">最后更新时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (person of persons.data; track person) {
+            <tr>
+              <td class="d-none d-md-table-cell">{{person.id}}</td>
+              <td><span class="edit" (click)="edit(person.id)">{{person.name}}</span></td>
+              <td class="d-none d-lg-table-cell">{{person.wechat_id || '--'}}</td>
+              <td class="d-none d-lg-table-cell">{{person.wechat_name || '--'}}</td>
+              <td class="d-none d-lg-table-cell">{{person.douyin_id || '--'}}</td>
+              <td class="d-none d-lg-table-cell">{{person.douyin_name || '--'}}</td>
+              @if (isAdmin) {
+                <td class="d-none d-xl-table-cell">{{getUserName(person.user_id)}}</td>
+              }
+              <td class="d-none d-xl-table-cell">{{person.created_at}}</td>
+              <td class="d-none d-xl-table-cell">{{person.updated_at}}</td>
+              <td>
+                @if (deleting==person.id) {
+                  <button class="btn btn-sm btn-danger" disabled>
+                    <span class="spinner-border spinner-border-sm"></span> 删除中...
+                  </button>
+                }
+                @if (deleting==0) {
+                  <button class="btn btn-sm btn-outline-danger" (click)="delete(person.id)"><i class="bi bi-trash"></i> 删除</button>
+                }
+                @if (deleting>0 && deleting!=person.id) {
+                  <button class="btn btn-sm btn-outline-danger" disabled>等待中...</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pt-3">
+      <app-page-change [page]="page" [total]="persons.total" (pageChange)="pageChange($event)"></app-page-change>
+    </div>
+  </div>
+</div>

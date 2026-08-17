@@ -1,0 +1,63 @@
+<div class="modal-header border-0 pb-0">
+  <div class="w-100 text-center">
+    <i class="bi bi-person-badge" style="font-size:2rem;color:#1765d5;"></i>
+    <h4 class="modal-title fw-bold mt-2 mb-0">{{ person.id==0? "添加联系人":"编辑联系人" }}</h4>
+  </div>
+  <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" aria-label="Close" (click)="dismiss()"></button>
+</div>
+
+<app-alert [(alerts)]="alerts"></app-alert>
+
+<div class="modal-body pt-0">
+  <!-- 基本信息 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">基本信息</div>
+    <div class="row mb-3">
+      <label for="name" class="col-2 col-form-label">名字</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="name" [(ngModel)]="person.name" name="name" maxlength="64" />
+      </div>
+      @if (isAdmin) {
+        <label class="col-2 col-form-label">所属用户</label>
+        <div class="col-4">
+          <select class="form-select" [(ngModel)]="person.user_id" name="user_id">
+            @for (user of users; track user) {
+              <option [ngValue]="user.id">{{user.username}} ({{user.role}})</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+    <div class="row mb-3">
+      <label for="wechat_id" class="col-2 col-form-label">微信号</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="wechat_id" [(ngModel)]="person.wechat_id" name="wechat_id" maxlength="64" />
+      </div>
+      <label for="wechat_name" class="col-2 col-form-label">微信名</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="wechat_name" [(ngModel)]="person.wechat_name" name="wechat_name" maxlength="64" />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="douyin_id" class="col-2 col-form-label">抖音号</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="douyin_id" [(ngModel)]="person.douyin_id" name="douyin_id" maxlength="64" />
+      </div>
+      <label for="douyin_name" class="col-2 col-form-label">抖音名</label>
+      <div class="col-4">
+        <input type="text" class="form-control" id="douyin_name" [(ngModel)]="person.douyin_name" name="douyin_name" maxlength="64" />
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-primary px-5 me-2" (click)="save()" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        <span class="spinner-border spinner-border-sm"></span> 保存中...
+      } @else {
+        <span>保存</span>
+      }
+    </button>
+    <button class="btn btn-outline-secondary px-4" (click)="dismiss()" [disabled]="isSubmitting">取消</button>
+  </div>
+</div>

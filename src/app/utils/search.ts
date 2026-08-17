@@ -56,5 +56,21 @@ export function buildSearchParams(
     hasSearchConditions = true;
   }
 
+  // 联系人信息：模糊搜索，空字符串不发送
+  const personStringFields: Array<keyof SearchHoroscopeRequest> = [
+    'person_name',
+    'wechat_id',
+    'wechat_name',
+    'douyin_id',
+    'douyin_name',
+  ];
+  for (const field of personStringFields) {
+    const value = searchParams[field];
+    if (typeof value === 'string' && value.trim() !== '') {
+      (params[field] as string) = value.trim();
+      hasSearchConditions = true;
+    }
+  }
+
   return { params, hasSearchConditions };
 }

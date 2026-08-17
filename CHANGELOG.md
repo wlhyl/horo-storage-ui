@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] 2026-08-18
+
+### Added
+
+- 新增联系人管理功能：支持联系人的分页浏览、新增、编辑、删除
+  - 联系人字段：名字（必填）、微信号、微信名、抖音号、抖音名（均可选），按登录用户隔离（admin 可见全部）
+  - 删除被天宫图引用的联系人时显示友好错误提示
+  - admin 可在新增表单中指定联系人所属用户（创建后不可修改）
+  - 首页新增"联系人管理"入口卡片
+- 天宫图记录支持归属联系人：表单可选关联联系人，选"无"解除关联；锁定后禁止修改联系人
+- 天宫图列表新增"联系人"列，显示关联联系人姓名，悬停可查看完整联系方式
+- 天宫图搜索支持按联系人名字、微信号、微信名、抖音号、抖音名模糊搜索
+
 ## [0.14.1] 2026-08-17
 
 ### Fixed

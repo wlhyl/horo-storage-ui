@@ -55,6 +55,23 @@
               <option [ngValue]="false">未校正</option>
             </select>
           </div>
+          <div class="col-md-2">
+            <input type="text" id="person_name" class="form-control" [(ngModel)]="searchParams.person_name" name="person_name" placeholder="联系人名">
+          </div>
+          <div class="col-md-2">
+            <input type="text" id="wechat_id" class="form-control" [(ngModel)]="searchParams.wechat_id" name="wechat_id" placeholder="微信号">
+          </div>
+          <div class="col-md-2">
+            <input type="text" id="wechat_name" class="form-control" [(ngModel)]="searchParams.wechat_name" name="wechat_name" placeholder="微信名">
+          </div>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-2">
+            <input type="text" id="douyin_id" class="form-control" [(ngModel)]="searchParams.douyin_id" name="douyin_id" placeholder="抖音号">
+          </div>
+          <div class="col-md-2">
+            <input type="text" id="douyin_name" class="form-control" [(ngModel)]="searchParams.douyin_name" name="douyin_name" placeholder="抖音名">
+          </div>
           <div class="col-md-3">
             <div class="d-flex gap-2">
               <button type="submit" class="btn btn-primary" [disabled]="refreshing">
@@ -79,6 +96,7 @@
             <th class="d-none d-lg-table-cell">时区</th>
             <th class="d-none d-lg-table-cell">夏令时</th>
             <th>城市</th>
+            <th class="d-none d-lg-table-cell">联系人</th>
             <th class="d-none d-xl-table-cell">创建时间</th>
             <th class="d-none d-xl-table-cell">最后更新时间</th>
             <th>操作</th>
@@ -106,6 +124,13 @@
                 <label class="mb-0" ngbTooltip="{{native.location.is_east? '+':'-' }}{{native.location.longitude_degree}}°{{native.location.longitude_minute}}'{{native.location.longitude_second}},{{native.location.is_north? '+':'-'}}{{native.location.latitude_degree}}°{{native.location.latitude_minute}}'{{native.location.latitude_second}}">
                   {{native.location.name}}
                 </label>
+              </td>
+              <td class="d-none d-lg-table-cell">
+                @if (native.person; as person) {
+                  <span ngbTooltip="{{person.wechat_id || ''}}{{person.wechat_name ? ' / '+person.wechat_name : ''}}{{person.douyin_id ? ' / '+person.douyin_id : ''}}{{person.douyin_name ? ' / '+person.douyin_name : ''}}">{{person.name}}</span>
+                } @else {
+                  <span class="text-muted">--</span>
+                }
               </td>
               <td class="d-none d-xl-table-cell">{{ native.created_at }}</td>
               <td class="d-none d-xl-table-cell">{{ native.updated_at }}</td>

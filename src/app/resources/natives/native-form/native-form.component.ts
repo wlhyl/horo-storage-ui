@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Horoscope, HoroscopeRequest, UpdateHoroscopeRequest } from '../../../interfaces/horoscope';
+import { Person } from '../../../interfaces/person';
 import { TIME_ZONES } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
@@ -9,6 +10,7 @@ import { Location, LocationRequest, LongLatResponse } from '../../../interfaces/
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../interfaces/user';
 import { isInChineseDST } from '../../../utils/dst/dst';
+import { getApiErrorMessage } from '../../../utils/api-error/api-error';
 
 @Component({
   selector: 'app-native-form',
@@ -19,17 +21,22 @@ import { isInChineseDST } from '../../../utils/dst/dst';
 })
 export class NativeFormComponent implements OnInit {
   @Input() native!: Horoscope;
+  // 联系人列表（用于下拉选择关联联系人），由表单自行分页拉取全部
+  persons: Person[] = [];
+  // 当前选中的联系人ID（下拉双向绑定用，与 native.person 解耦）
+  personId: number | null = null;
   zones = TIME_ZONES;
   alerts: Alert[] = [];
   queryingLocation = false;
   locationResults: LongLatResponse[] = [];
   showLocationResults = false;
-  
+
   // 管理员相关属性
   users: User[] = [];
   isAdmin = false;
   isSubmitting = false;
   private originalNative?: Horoscope;
+  private originalPersonId: number | null = null;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -41,17 +48,21 @@ export class NativeFormComponent implements OnInit {
     if (this.native.id > 0) {
       this.originalNative = structuredClone(this.native);
     }
+    // 从响应的 person 对象提取 id 用于下拉绑定（请求体只接受 person_id）
+    this.personId = this.native.person?.id ?? null;
+    this.originalPersonId = this.personId;
     this.checkAdmin();
     if (this.isAdmin) {
       this.getUsers();
     }
+    this.fetchAllPersons();
   }
-  
+
   private checkAdmin(): void {
     const user = this.authService.user;
     this.isAdmin = user?.role === 'admin';
   }
-  
+
   private getUsers(): void {
     this.apiService.getUsers().subscribe({
       next: (users) => {
@@ -60,12 +71,36 @@ export class NativeFormComponent implements OnInit {
       error: (error) => {
         this.alerts.push({
           kind: AlertKind.DANGER,
-          message:
-            '查询用户列表失败: ' +
-            (error.error?.message || error.message || '未知错误'),
+          message: '查询用户列表失败: ' + getApiErrorMessage(error),
         });
       },
     });
+  }
+
+  // 循环分页拉取全部联系人，避免单页上限导致部分联系人无法在下拉中选择
+  private fetchAllPersons() {
+    const pageSize = 1000;
+    let page = 0;
+    this.persons = [];
+    const fetchPage = () => {
+      this.apiService.getPersons(page, pageSize).subscribe({
+        next: (response) => {
+          this.persons = this.persons.concat(response.data);
+          // total 为总页数；未取尽则继续拉取下一页
+          if (response.total > 0 && page < response.total - 1) {
+            page++;
+            fetchPage();
+          }
+        },
+        error: (error) => {
+          this.alerts.push({
+            kind: AlertKind.WARNING,
+            message: '加载联系人列表失败: ' + getApiErrorMessage(error),
+          });
+        },
+      });
+    };
+    fetchPage();
   }
 
   queryLocation() {
@@ -96,9 +131,7 @@ export class NativeFormComponent implements OnInit {
         this.queryingLocation = false;
         this.alerts.push({
           kind: AlertKind.DANGER,
-          message:
-            '查询地理位置失败: ' +
-            (error.error?.message || error.message || '未知错误'),
+          message: '查询地理位置失败: ' + getApiErrorMessage(error),
         });
       },
     });
@@ -253,6 +286,8 @@ export class NativeFormComponent implements OnInit {
       },
       description: this.native.description,
       lock: this.native.lock,
+      user_id: this.isAdmin ? this.native.user_id : undefined,
+      person_id: this.personId,
     };
 
     this.apiService.addHoroscope(request).subscribe({
@@ -296,6 +331,12 @@ export class NativeFormComponent implements OnInit {
       description: current.description === original?.description ? null : current.description,
       lock: current.lock === original?.lock ? null : current.lock,
       user_id: this.isAdmin && current.user_id !== original?.user_id ? current.user_id : null,
+      // person_id 三态：未改=undefined(不发)；改为null=解除关联；改为数值=设置
+      person_id: isLocked
+        ? undefined
+        : this.personId === this.originalPersonId
+          ? undefined
+          : this.personId,
     };
 
     this.apiService.updateHoroscope(this.native.id, request).subscribe({

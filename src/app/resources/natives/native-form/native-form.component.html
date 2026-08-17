@@ -56,6 +56,17 @@
         </div>
       </div>
     }
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">联系人</label>
+      <div class="col-4">
+        <select class="form-select" [(ngModel)]="personId" name="person_id" [disabled]="native.id > 0 && native.lock">
+          <option [ngValue]="null">无</option>
+          @for (person of persons; track person) {
+            <option [ngValue]="person.id">{{person.name}}</option>
+          }
+        </select>
+      </div>
+    </div>
   </div>
 
   <!-- 时间信息部分 -->

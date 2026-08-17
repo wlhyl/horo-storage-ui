@@ -16,6 +16,11 @@ import {
 } from '../../interfaces/historical-horoscope';
 import { PageResponser } from '../../interfaces/page';
 import { LongLatResponse } from '../../interfaces/location';
+import {
+  Person,
+  PersonRequest,
+  UpdatePersonRequest,
+} from '../../interfaces/person';
 
 @Injectable({
   providedIn: 'root',
@@ -167,5 +172,49 @@ export class ApiService {
         headers: { ...this.http_options, token: this.user.token },
       }
     );
+  }
+
+  // 获取联系人分页列表
+  getPersons(
+    page: number,
+    size: number
+  ): Observable<PageResponser<Array<Person>>> {
+    return this.http.get<PageResponser<Array<Person>>>(
+      `${this.url}/persons?page=${page}&size=${size}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  // 根据id获取联系人
+  getPersonById(id: number): Observable<Person> {
+    return this.http.get<Person>(`${this.url}/persons/${id}`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 新增联系人
+  addPerson(person: PersonRequest): Observable<Person> {
+    return this.http.post<Person>(`${this.url}/persons`, person, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 更新联系人
+  updatePerson(
+    id: number,
+    person: UpdatePersonRequest
+  ): Observable<void> {
+    return this.http.put<void>(`${this.url}/persons/${id}`, person, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 删除联系人
+  deletePerson(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/persons/${id}`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
   }
 }

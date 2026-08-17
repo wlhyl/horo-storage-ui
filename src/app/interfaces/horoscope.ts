@@ -1,4 +1,5 @@
 import { Location, LocationRequest } from './location';
+import { Person } from './person';
 
 // 盘类型：本命盘（natal）或卜卦盘（horary）
 export type ChartType = 'natal' | 'horary';
@@ -28,6 +29,8 @@ export interface Horoscope {
   updated_at: string | null;
   lock: boolean;
   user_id: number;
+  // 所属联系人信息，null表示未关联（API JOIN persons表返回）
+  person: Person | null;
 }
 
 export interface HoroscopeRequest {
@@ -63,6 +66,10 @@ export interface HoroscopeRequest {
   description: string;
   // 是否锁定
   lock: Boolean;
+  // 归属登录用户ID（可选，仅 admin 生效，缺省为当前登录用户，非 admin 忽略该字段）
+  user_id?: number;
+  // 所属联系人ID（可选，null表示不关联）
+  person_id?: number | null;
 }
 
 export interface UpdateHoroscopeRequest {
@@ -98,6 +105,8 @@ export interface UpdateHoroscopeRequest {
   lock: Boolean | null;
   // 所属用户ID
   user_id: number | null;
+  // 所属联系人ID：未传(undefined)=不修改；null=解除关联；数值=设置关联
+  person_id?: number | null;
 }
 
 // 搜索请求接口
@@ -123,4 +132,14 @@ export interface SearchHoroscopeRequest {
   chart_type?: ChartType;
   // 时间是否精准（仅本命盘有意义），true=已校对，false=未校对
   is_time_precise?: boolean;
+  // 联系人名字（模糊搜索）
+  person_name?: string;
+  // 联系人微信号（模糊搜索）
+  wechat_id?: string;
+  // 联系人微信名（模糊搜索）
+  wechat_name?: string;
+  // 联系人抖音号（模糊搜索）
+  douyin_id?: string;
+  // 联系人抖音名（模糊搜索）
+  douyin_name?: string;
 }
