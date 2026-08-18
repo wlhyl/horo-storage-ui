@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
     Native: `${Path.Resource}/${ResourcePath.Native}`,
     User: `${Path.Resource}/${ResourcePath.User}`,
     Historical: `${Path.Resource}/${ResourcePath.Historical}`,
+    Person: `${Path.Resource}/${ResourcePath.Person}`,
   };
 
   constructor(

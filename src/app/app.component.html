@@ -23,6 +23,11 @@
           <i class="bi bi-people me-2"></i>用户管理
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center px-4 fw-medium" [routerLink]="path.Person" routerLinkActive="active">
+          <i class="bi bi-person-lines me-2"></i>联系人管理
+        </a>
+      </li>
     </ul>
     <div class="d-flex align-items-center">
       @if (!user.isAuth) {
