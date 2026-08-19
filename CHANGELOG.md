@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] 2026-08-19
+
+### Added
+
+- 新增标签管理功能：支持标签的分页浏览、新增、编辑、删除
+  - 标签名全局唯一（1~30 字符），所有用户可见可用；修改/删除仅限创建者或 admin，无权限时按钮禁用并提示原因
+  - admin 可在表单中指定标签所属用户
+  - 删除被天宫图记录引用的标签时显示后端返回的引用数量提示
+  - 顶部导航与首页新增"标签管理"入口
+- 天宫图记录支持打标签：表单以多选 chips 方式选择标签，创建/编辑均可设置；锁定后禁止修改标签
+- 天宫图列表新增"标签"列，以徽章形式展示记录挂载的标签
+- 天宫图搜索支持按标签名模糊搜索（匹配记录上挂载的任意标签）
+
+### Changed
+
+- TypeScript 编译目标升至 ES2023，并显式设置 lib 为 ["ES2023", "DOM", "DOM.Iterable"]，启用 toSorted 等 ES2023 数组方法的类型支持
+
 ## [0.15.1] 2026-08-18
 
 ### Added

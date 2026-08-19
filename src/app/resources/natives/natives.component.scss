@@ -81,6 +81,18 @@
   vertical-align: middle;
 }
 
+// 标签徽章：浅蓝底圆角，多个标签可换行排列
+.tag-badge {
+  display: inline-block;
+  margin: 0 0.25rem 0.25rem 0;
+  padding: 0.1rem 0.5rem;
+  background: #e6f0fb;
+  color: #1765d5;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 @media (max-width: 768px) {
   .natives-card {
     padding: 12px 4px 4px 4px;

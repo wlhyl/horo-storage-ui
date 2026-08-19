@@ -15,6 +15,8 @@ import { HistoricalComponent } from './historical/historical.component';
 import { HistoricalFormComponent } from './historical/historical-form/historical-form.component';
 import { PersonsComponent } from './persons/persons.component';
 import { PersonFormComponent } from './persons/person-form/person-form.component';
+import { TagsComponent } from './tags/tags.component';
+import { TagFormComponent } from './tags/tag-form/tag-form.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { PersonFormComponent } from './persons/person-form/person-form.component
     HistoricalFormComponent,
     PersonsComponent,
     PersonFormComponent,
+    TagsComponent,
+    TagFormComponent,
   ],
   imports: [
     CommonModule,

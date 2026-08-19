@@ -1,5 +1,6 @@
 import { Location, LocationRequest } from './location';
 import { Person } from './person';
+import { Tag } from './tag';
 
 // 盘类型：本命盘（natal）或卜卦盘（horary）
 export type ChartType = 'natal' | 'horary';
@@ -31,6 +32,8 @@ export interface Horoscope {
   user_id: number;
   // 所属联系人信息，null表示未关联（API JOIN persons表返回）
   person: Person | null;
+  // 标签列表，空数组表示无标签（API JOIN tags表返回）
+  tags: Tag[];
 }
 
 export interface HoroscopeRequest {
@@ -70,6 +73,8 @@ export interface HoroscopeRequest {
   user_id?: number;
   // 所属联系人ID（可选，null表示不关联）
   person_id?: number | null;
+  // 标签ID列表（可选，标签全局共享）
+  tag_ids?: number[];
 }
 
 export interface UpdateHoroscopeRequest {
@@ -107,6 +112,8 @@ export interface UpdateHoroscopeRequest {
   user_id: number | null;
   // 所属联系人ID：未传(undefined)=不修改；null=解除关联；数值=设置关联
   person_id?: number | null;
+  // 标签ID列表：未传(undefined)=不修改；数组=替换为该列表（空数组=清空全部）
+  tag_ids?: number[] | null;
 }
 
 // 搜索请求接口
@@ -142,4 +149,6 @@ export interface SearchHoroscopeRequest {
   douyin_id?: string;
   // 联系人抖音名（模糊搜索）
   douyin_name?: string;
+  // 标签名（模糊搜索，匹配记录上挂载的任意标签）
+  tag_name?: string;
 }

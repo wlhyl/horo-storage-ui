@@ -67,6 +67,26 @@
         </select>
       </div>
     </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">标签</label>
+      <div class="col-10">
+        <div class="d-flex flex-wrap gap-2 tag-select">
+          @for (tag of allTags; track tag) {
+            <label class="tag-chip" [class.selected]="selectedTagIds.has(tag.id)">
+              <input
+                type="checkbox"
+                [checked]="selectedTagIds.has(tag.id)"
+                (change)="toggleTag(tag.id, $any($event.target).checked)"
+                [disabled]="native.id > 0 && native.lock"
+              />
+              {{tag.name}}
+            </label>
+          } @empty {
+            <span class="text-muted small">暂无标签，可先在标签管理中添加</span>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 时间信息部分 -->

@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     User: `${Path.Resource}/${ResourcePath.User}`,
     Historical: `${Path.Resource}/${ResourcePath.Historical}`,
     Person: `${Path.Resource}/${ResourcePath.Person}`,
+    Tag: `${Path.Resource}/${ResourcePath.Tag}`,
   };
 
   constructor(

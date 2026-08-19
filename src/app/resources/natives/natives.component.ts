@@ -55,6 +55,7 @@ export class NativesComponent implements OnInit {
     wechat_name: undefined,
     douyin_id: undefined,
     douyin_name: undefined,
+    tag_name: undefined,
   };
 
   get isAdmin(): boolean {
@@ -123,7 +124,7 @@ export class NativesComponent implements OnInit {
     if (!filteredParams.hasSearchConditions) {
       this.message.push({
         kind: AlertKind.WARNING,
-        message: '请至少输入一个搜索条件（姓名、年、月、日、时、盘类型、时间精准、联系人信息）',
+        message: '请至少输入一个搜索条件（姓名、年、月、日、时、盘类型、时间精准、联系人信息、标签）',
       });
       return;
     }
@@ -182,6 +183,7 @@ export class NativesComponent implements OnInit {
       wechat_name: undefined,
       douyin_id: undefined,
       douyin_name: undefined,
+      tag_name: undefined,
     };
     // 重新加载列表
     this.page = 0;

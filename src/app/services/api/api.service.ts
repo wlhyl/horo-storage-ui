@@ -21,6 +21,11 @@ import {
   PersonRequest,
   UpdatePersonRequest,
 } from '../../interfaces/person';
+import {
+  Tag,
+  TagRequest,
+  UpdateTagRequest,
+} from '../../interfaces/tag';
 
 @Injectable({
   providedIn: 'root',
@@ -214,6 +219,47 @@ export class ApiService {
   // 删除联系人
   deletePerson(id: number): Observable<void> {
     return this.http.delete<void>(`${this.url}/persons/${id}`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 获取标签分页列表
+  getTags(
+    page: number,
+    size: number
+  ): Observable<PageResponser<Array<Tag>>> {
+    return this.http.get<PageResponser<Array<Tag>>>(
+      `${this.url}/tags?page=${page}&size=${size}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  // 根据id获取标签
+  getTagById(id: number): Observable<Tag> {
+    return this.http.get<Tag>(`${this.url}/tags/${id}`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 新增标签
+  addTag(tag: TagRequest): Observable<Tag> {
+    return this.http.post<Tag>(`${this.url}/tags`, tag, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 更新标签
+  updateTag(id: number, tag: UpdateTagRequest): Observable<void> {
+    return this.http.put<void>(`${this.url}/tags/${id}`, tag, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 删除标签
+  deleteTag(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/tags/${id}`, {
       headers: { ...this.http_options, token: this.user.token },
     });
   }

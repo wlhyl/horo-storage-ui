@@ -72,6 +72,9 @@
           <div class="col-md-2">
             <input type="text" id="douyin_name" class="form-control" [(ngModel)]="searchParams.douyin_name" name="douyin_name" placeholder="抖音名">
           </div>
+          <div class="col-md-2">
+            <input type="text" id="tag_name" class="form-control" [(ngModel)]="searchParams.tag_name" name="tag_name" placeholder="标签">
+          </div>
           <div class="col-md-3">
             <div class="d-flex gap-2">
               <button type="submit" class="btn btn-primary" [disabled]="refreshing">
@@ -97,6 +100,7 @@
             <th class="d-none d-lg-table-cell">夏令时</th>
             <th>城市</th>
             <th class="d-none d-lg-table-cell">联系人</th>
+            <th class="d-none d-xl-table-cell">标签</th>
             <th class="d-none d-xl-table-cell">创建时间</th>
             <th class="d-none d-xl-table-cell">最后更新时间</th>
             <th>操作</th>
@@ -129,6 +133,13 @@
                 @if (native.person; as person) {
                   <span ngbTooltip="{{person.wechat_id || ''}}{{person.wechat_name ? ' / '+person.wechat_name : ''}}{{person.douyin_id ? ' / '+person.douyin_id : ''}}{{person.douyin_name ? ' / '+person.douyin_name : ''}}">{{person.name}}</span>
                 } @else {
+                  <span class="text-muted">--</span>
+                }
+              </td>
+              <td class="d-none d-xl-table-cell">
+                @for (tag of native.tags; track tag) {
+                  <span class="tag-badge">{{tag.name}}</span>
+                } @empty {
                   <span class="text-muted">--</span>
                 }
               </td>

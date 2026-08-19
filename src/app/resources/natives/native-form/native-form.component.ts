@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Horoscope, HoroscopeRequest, UpdateHoroscopeRequest } from '../../../interfaces/horoscope';
 import { Person } from '../../../interfaces/person';
+import { Tag } from '../../../interfaces/tag';
 import { TIME_ZONES } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
@@ -25,6 +26,10 @@ export class NativeFormComponent implements OnInit {
   persons: Person[] = [];
   // 当前选中的联系人ID（下拉双向绑定用，与 native.person 解耦）
   personId: number | null = null;
+  // 标签列表（全局共享，用于勾选），由表单自行分页拉取全部
+  allTags: Tag[] = [];
+  // 当前勾选的标签ID集合（与 native.tags 解耦）
+  selectedTagIds: Set<number> = new Set();
   zones = TIME_ZONES;
   alerts: Alert[] = [];
   queryingLocation = false;
@@ -37,6 +42,7 @@ export class NativeFormComponent implements OnInit {
   isSubmitting = false;
   private originalNative?: Horoscope;
   private originalPersonId: number | null = null;
+  private originalTagIds: number[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -51,11 +57,15 @@ export class NativeFormComponent implements OnInit {
     // 从响应的 person 对象提取 id 用于下拉绑定（请求体只接受 person_id）
     this.personId = this.native.person?.id ?? null;
     this.originalPersonId = this.personId;
+    // 从响应的 tags 对象提取 id 集合用于勾选（请求体只接受 tag_ids）
+    this.selectedTagIds = new Set(this.native.tags.map((t) => t.id));
+    this.originalTagIds = Array.from(this.selectedTagIds).toSorted((a, b) => a - b);
     this.checkAdmin();
     if (this.isAdmin) {
       this.getUsers();
     }
     this.fetchAllPersons();
+    this.fetchAllTags();
   }
 
   private checkAdmin(): void {
@@ -101,6 +111,50 @@ export class NativeFormComponent implements OnInit {
       });
     };
     fetchPage();
+  }
+
+  // 循环分页拉取全部标签（标签全局共享），避免单页上限导致部分标签无法勾选
+  private fetchAllTags() {
+    const pageSize = 1000;
+    let page = 0;
+    this.allTags = [];
+    const fetchPage = () => {
+      this.apiService.getTags(page, pageSize).subscribe({
+        next: (response) => {
+          this.allTags = this.allTags.concat(response.data);
+          // total 为总页数；未取尽则继续拉取下一页
+          if (response.total > 0 && page < response.total - 1) {
+            page++;
+            fetchPage();
+          }
+        },
+        error: (error) => {
+          this.alerts.push({
+            kind: AlertKind.WARNING,
+            message: '加载标签列表失败: ' + getApiErrorMessage(error),
+          });
+        },
+      });
+    };
+    fetchPage();
+  }
+
+  // 勾选/取消勾选标签
+  toggleTag(id: number, checked: boolean) {
+    if (checked) {
+      this.selectedTagIds.add(id);
+    } else {
+      this.selectedTagIds.delete(id);
+    }
+  }
+
+  // 标签选择是否发生变化（排序后与原始列表比较）
+  private isTagsChanged(): boolean {
+    const current = Array.from(this.selectedTagIds).toSorted((a, b) => a - b);
+    return (
+      current.length !== this.originalTagIds.length ||
+      current.some((id, i) => id !== this.originalTagIds[i])
+    );
   }
 
   queryLocation() {
@@ -288,6 +342,7 @@ export class NativeFormComponent implements OnInit {
       lock: this.native.lock,
       user_id: this.isAdmin ? this.native.user_id : undefined,
       person_id: this.personId,
+      tag_ids: Array.from(this.selectedTagIds),
     };
 
     this.apiService.addHoroscope(request).subscribe({
@@ -337,6 +392,12 @@ export class NativeFormComponent implements OnInit {
         : this.personId === this.originalPersonId
           ? undefined
           : this.personId,
+      // tag_ids：未改=undefined(不发)；变化=替换为当前列表（空数组=清空全部）；锁定时不发
+      tag_ids: isLocked
+        ? undefined
+        : this.isTagsChanged()
+          ? Array.from(this.selectedTagIds)
+          : undefined,
     };
 
     this.apiService.updateHoroscope(this.native.id, request).subscribe({

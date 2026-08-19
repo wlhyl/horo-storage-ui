@@ -1,0 +1,77 @@
+// 模态框相关
+.modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+// 表单控件样式
+.form-control,
+.form-select {
+  &:focus {
+    box-shadow: none;
+    border-color: #80bdff;
+  }
+}
+
+// 输入组样式
+.input-group {
+  margin-bottom: 0.5rem;
+
+  .form-control:not(:last-child) {
+    border-right: none;
+  }
+}
+
+// 复选框样式
+.form-check-input {
+  &:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+}
+
+.modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+
+  .modal-title {
+    color: #1765d5;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+}
+
+.form-section {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 18px 16px 8px 16px;
+  margin-bottom: 18px;
+}
+
+.section-title {
+  color: #1765d5;
+  font-weight: 600;
+  font-size: 1.08rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #1765d5;
+  box-shadow: 0 0 0 2px rgba(23, 101, 213, 0.08);
+}
+
+.btn-primary {
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+
+.btn-outline-secondary {
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .form-section {
+    padding: 8px 2px 4px 2px;
+  }
+}

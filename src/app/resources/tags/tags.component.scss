@@ -1,0 +1,77 @@
+// 保留必要的表格和交互样式
+.table-responsive {
+  margin-bottom: 1rem;
+}
+
+.table {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.96rem;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+// 表格旋转动画效果
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bi-arrow-clockwise-spin {
+  animation: spin 1s linear infinite;
+}
+
+.tags-bg {
+  background: #f5f7fa;
+  min-height: 80vh;
+  padding: 24px 0;
+}
+
+.tags-card {
+  border-radius: 16px;
+  padding: 24px 24px 8px 24px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(23, 101, 213, 0.08);
+}
+
+.btn-primary,
+.btn-outline-secondary {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.table thead {
+  background: #e6f0fb;
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background: #f0f6ff;
+}
+
+.edit {
+  color: #1765d5;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 768px) {
+  .tags-card {
+    padding: 12px 4px 4px 4px;
+  }
+
+  .table {
+    font-size: 0.9rem;
+  }
+}

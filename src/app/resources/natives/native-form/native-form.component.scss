@@ -70,6 +70,53 @@
   font-weight: 500;
 }
 
+// 标签多选 chips：未选中浅灰边框，选中浅蓝底蓝字
+.tag-select {
+  min-height: calc(1.5em + 0.75rem);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 1rem;
+  background: #fff;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    border-color: #1765d5;
+    color: #1765d5;
+  }
+
+  &.selected {
+    background: #e6f0fb;
+    border-color: #1765d5;
+    color: #1765d5;
+  }
+
+  input[type='checkbox'] {
+    margin: 0;
+    accent-color: #1765d5;
+  }
+
+  &:has(input:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+
+    &:hover {
+      border-color: #ced4da;
+      color: #495057;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .form-section {
     padding: 8px 2px 4px 2px;
