@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] 2026-08-23
+
+### Added
+
+- 古代星盘支持盘类型（chart_type）字段，可区分本命盘与卜卦盘（同步后端 v0.10.0）
+- 古代星盘搜索支持按盘类型过滤，列表中卜卦盘记录显示红色 "H" 徽标
+- 古代星盘表单新增盘类型选择：新建默认本命盘，锁定后禁止修改
+
 ## [0.16.0] 2026-08-19
 
 ### Added

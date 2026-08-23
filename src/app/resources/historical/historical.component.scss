@@ -64,6 +64,15 @@
   }
 }
 
+// 卜卦盘徽章：红色 H 标识
+.horary-badge {
+  margin-right: 0.2rem;
+  color: #dc3545;
+  font-size: 0.8em;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
 @media (max-width: 768px) {
   .historical-card {
     padding: 12px 4px 4px 4px;

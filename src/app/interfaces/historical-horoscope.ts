@@ -1,3 +1,4 @@
+import { ChartType } from '../enum/chart-type';
 import { Location, LocationRequest } from './location';
 
 export interface HouseCusp {
@@ -23,6 +24,8 @@ export interface HistoricalHoroscope {
   id: number;
   name: string;
   gender: boolean | null;
+  // 盘类型：本命盘（natal）或卜卦盘（horary）
+  chart_type: ChartType;
   description: string;
   year: number | null;
   month: number | null;
@@ -46,6 +49,8 @@ export interface HistoricalHoroscope {
 export interface HistoricalHoroscopeRequest {
   name: string;
   gender: boolean | null;
+  // 盘类型：本命盘（natal）或卜卦盘（horary）
+  chart_type: ChartType;
   description: string;
   year: number | null;
   month: number | null;
@@ -66,6 +71,8 @@ export interface HistoricalHoroscopeRequest {
 export interface UpdateHistoricalHoroscopeRequest {
   name: string | null | undefined;
   gender: boolean | null | undefined;
+  // 盘类型：本命盘（natal）或卜卦盘（horary），未传=不修改
+  chart_type: ChartType | null | undefined;
   description: string | null | undefined;
   year: number | null | undefined;
   month: number | null | undefined;

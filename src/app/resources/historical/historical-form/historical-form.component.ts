@@ -15,6 +15,7 @@ import {
 } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
+import { ChartType } from '../../../enum/chart-type';
 import { ApiService } from '../../../services/api/api.service';
 import {
   Location,
@@ -33,6 +34,8 @@ import { getApiErrorMessage } from '../../../utils/api-error/api-error';
 })
 export class HistoricalFormComponent implements OnInit {
   @Input() horoscope!: HistoricalHoroscope;
+  // 模板中使用的盘类型枚举
+  chartType = ChartType;
   zones = TIME_ZONES;
   planetNames = PLANET_NAMES;
   zodiacSigns = ZODIAC_SIGNS;
@@ -202,6 +205,7 @@ export class HistoricalFormComponent implements OnInit {
     const request: HistoricalHoroscopeRequest = {
       name: this.horoscope.name,
       gender: this.horoscope.gender,
+      chart_type: this.horoscope.chart_type,
       description: this.horoscope.description,
       year: this.horoscope.year,
       month: this.horoscope.month,
@@ -262,6 +266,12 @@ export class HistoricalFormComponent implements OnInit {
         : current.gender === original?.gender
           ? undefined
           : current.gender,
+      chart_type:
+        isLocked
+          ? undefined
+          : current.chart_type === original?.chart_type
+            ? undefined
+            : current.chart_type,
       description:
         current.description === original?.description
           ? undefined

@@ -9,6 +9,7 @@ import { SearchHoroscopeRequest } from '../../interfaces/horoscope';
 import { ApiService } from '../../services/api/api.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AlertKind } from '../../enum/alert';
+import { ChartType } from '../../enum/chart-type';
 import { PAGE_SIZE, DEFAULT_HISTORICAL_HOROSCOPE } from '../../utils/constant';
 import { buildSearchParams } from '../../utils/search';
 import { getApiErrorMessage } from '../../utils/api-error/api-error';
@@ -27,6 +28,8 @@ export class HistoricalComponent implements OnInit {
   page = 0;
   size = PAGE_SIZE;
   message: Array<Alert> = [];
+  // 模板中使用的盘类型枚举
+  chartType = ChartType;
 
   deleting = 0;
   refreshing = false;
@@ -47,6 +50,7 @@ export class HistoricalComponent implements OnInit {
     hour: undefined,
     minute: undefined,
     second: undefined,
+    chart_type: undefined,
   };
 
   get isAdmin(): boolean {
@@ -106,7 +110,7 @@ export class HistoricalComponent implements OnInit {
     if (!filteredParams.hasSearchConditions) {
       this.message.push({
         kind: AlertKind.WARNING,
-        message: '请至少输入一个搜索条件（姓名、年、月、日、时）',
+        message: '请至少输入一个搜索条件（姓名、年、月、日、时、盘类型）',
       });
       return;
     }
@@ -143,6 +147,7 @@ export class HistoricalComponent implements OnInit {
       hour: undefined,
       minute: undefined,
       second: undefined,
+      chart_type: undefined,
     };
     this.page = 0;
     this.getHoroscopes();

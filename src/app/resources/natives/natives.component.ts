@@ -9,6 +9,7 @@ import {
 import { ApiService } from '../../services/api/api.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AlertKind } from '../../enum/alert';
+import { ChartType } from '../../enum/chart-type';
 import { DEFAULT_NATIVE, PAGE_SIZE } from '../../utils/constant';
 import { buildSearchParams } from '../../utils/search';
 import { getApiErrorMessage } from '../../utils/api-error/api-error';
@@ -27,6 +28,8 @@ export class NativesComponent implements OnInit {
   page = 0;
   size = PAGE_SIZE;
   message: Array<Alert> = [];
+  // 模板中使用的盘类型枚举
+  chartType = ChartType;
 
   deleting = 0;
   refreshing = false; // 添加刷新状态标志

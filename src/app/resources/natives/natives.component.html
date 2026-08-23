@@ -44,8 +44,8 @@
           <div class="col-md-2">
             <select id="chart_type" class="form-select" [(ngModel)]="searchParams.chart_type" name="chart_type">
               <option [ngValue]="undefined">盘类型</option>
-              <option [ngValue]="'natal'">本命盘</option>
-              <option [ngValue]="'horary'">卜卦盘</option>
+              <option [ngValue]="chartType.Natal">本命盘</option>
+              <option [ngValue]="chartType.Horary">卜卦盘</option>
             </select>
           </div>
           <div class="col-md-2">
@@ -111,7 +111,7 @@
             <tr>
               <td class="d-none d-md-table-cell">{{native.id}}</td>
               <td>
-                @if (native.chart_type === 'horary') {
+                @if (native.chart_type === chartType.Horary) {
                   <span class="horary-badge" ngbTooltip="卜卦盘">H</span>
                 }
                 <span class="edit" [class.is-precise]="native.is_time_precise" (click)="edit(native.id)">{{native.name}}</span>

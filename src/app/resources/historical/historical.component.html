@@ -38,6 +38,15 @@
           <div class="col-md-1">
             <input type="number" id="second" class="form-control" [(ngModel)]="searchParams.second" name="second" placeholder="秒" min="0" max="59">
           </div>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-2">
+            <select id="chart_type" class="form-select" [(ngModel)]="searchParams.chart_type" name="chart_type">
+              <option [ngValue]="undefined">盘类型</option>
+              <option [ngValue]="chartType.Natal">本命盘</option>
+              <option [ngValue]="chartType.Horary">卜卦盘</option>
+            </select>
+          </div>
           <div class="col-md-3">
             <div class="d-flex gap-2">
               <button type="submit" class="btn btn-primary" [disabled]="refreshing">
@@ -70,7 +79,12 @@
           @for (h of horoscopes.data; track h) {
             <tr>
               <td class="d-none d-md-table-cell">{{h.id}}</td>
-              <td><span class="edit" (click)="edit(h.id)">{{h.name}}</span></td>
+              <td>
+                @if (h.chart_type === chartType.Horary) {
+                  <span class="horary-badge" ngbTooltip="卜卦盘">H</span>
+                }
+                <span class="edit" (click)="edit(h.id)">{{h.name}}</span>
+              </td>
               <td class="d-none d-sm-table-cell">{{formatGender(h.gender)}}</td>
               <td>{{formatTime(h)}}</td>
               <td class="d-none d-lg-table-cell">{{h.is_julian ? '是' : (h.is_julian === false ? '否' : '--')}}</td>

@@ -6,6 +6,7 @@ import { Tag } from '../../../interfaces/tag';
 import { TIME_ZONES } from '../../../utils/constant';
 import { Alert } from '../../../interfaces/alert';
 import { AlertKind } from '../../../enum/alert';
+import { ChartType } from '../../../enum/chart-type';
 import { ApiService } from '../../../services/api/api.service';
 import { Location, LocationRequest, LongLatResponse } from '../../../interfaces/location';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -22,6 +23,8 @@ import { getApiErrorMessage } from '../../../utils/api-error/api-error';
 })
 export class NativeFormComponent implements OnInit {
   @Input() native!: Horoscope;
+  // 模板中使用的盘类型枚举
+  chartType = ChartType;
   // 联系人列表（用于下拉选择关联联系人），由表单自行分页拉取全部
   persons: Person[] = [];
   // 当前选中的联系人ID（下拉双向绑定用，与 native.person 解耦）

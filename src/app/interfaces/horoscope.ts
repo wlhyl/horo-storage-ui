@@ -1,9 +1,7 @@
 import { Location, LocationRequest } from './location';
 import { Person } from './person';
 import { Tag } from './tag';
-
-// 盘类型：本命盘（natal）或卜卦盘（horary）
-export type ChartType = 'natal' | 'horary';
+import { ChartType } from '../enum/chart-type';
 
 export interface Horoscope {
   id: number;

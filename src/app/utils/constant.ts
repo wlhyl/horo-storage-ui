@@ -5,6 +5,7 @@ import {
   HouseCusp,
   PlanetPosition,
 } from '../interfaces/historical-horoscope';
+import { ChartType } from '../enum/chart-type';
 
 export const DEFAULT_LOCATION: Location = {
   id: 0,
@@ -31,7 +32,7 @@ export const DEFAULT_NATIVE: Horoscope = {
   birth_second: 0,
   time_zone_offset: 0,
   is_dst: false,
-  chart_type: 'natal',
+  chart_type: ChartType.Natal,
   is_time_precise: false,
   location: DEFAULT_LOCATION,
   description: '',
@@ -97,6 +98,7 @@ export const DEFAULT_HISTORICAL_HOROSCOPE: HistoricalHoroscope = {
   id: 0,
   name: '',
   gender: null,
+  chart_type: ChartType.Natal,
   description: '',
   year: null,
   month: null,

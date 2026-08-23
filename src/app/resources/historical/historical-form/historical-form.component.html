@@ -26,6 +26,19 @@
         </select>
       </div>
     </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">盘类型</label>
+      <div class="col-4 d-flex align-items-center">
+        <div class="form-check form-check-inline mb-0">
+          <input class="form-check-input" type="radio" id="hist_natal" [(ngModel)]="horoscope.chart_type" [value]="chartType.Natal" name="chart_type" [disabled]="isLocked">
+          <label class="form-check-label" for="hist_natal">本命盘</label>
+        </div>
+        <div class="form-check form-check-inline mb-0">
+          <input class="form-check-input" type="radio" id="hist_horary" [(ngModel)]="horoscope.chart_type" [value]="chartType.Horary" name="chart_type" [disabled]="isLocked">
+          <label class="form-check-label" for="hist_horary">卜卦盘</label>
+        </div>
+      </div>
+    </div>
     @if (isAdmin) {
       <div class="row mb-3">
         <label class="col-2 col-form-label">所属用户</label>
