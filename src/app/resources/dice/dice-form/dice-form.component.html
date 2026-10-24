@@ -1,0 +1,150 @@
+<div class="modal-header border-0 pb-0">
+  <div class="w-100 text-center">
+    <i class="bi bi-dice-5" style="font-size:2rem;color:#1765d5;"></i>
+    <h4 class="modal-title fw-bold mt-2 mb-0">{{ dice.id==0? "添加骰子记录":"编辑骰子记录" }}</h4>
+  </div>
+  <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" aria-label="Close" (click)="dismiss()"></button>
+</div>
+
+<app-alert [(alerts)]="alerts"></app-alert>
+
+<div class="modal-body pt-0">
+  <!-- 基本信息 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">基本信息</div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">体系</label>
+      <div class="col-10 d-flex align-items-center">
+        <div class="form-check form-check-inline mb-0">
+          <input class="form-check-input" type="radio" id="western" [(ngModel)]="dice.is_qizheng" [value]="false" (ngModelChange)="onSystemChange()" name="is_qizheng" [disabled]="isLocked">
+          <label class="form-check-label" for="western">占星</label>
+        </div>
+        <div class="form-check form-check-inline mb-0">
+          <input class="form-check-input" type="radio" id="qizheng" [(ngModel)]="dice.is_qizheng" [value]="true" (ngModelChange)="onSystemChange()" name="is_qizheng" [disabled]="isLocked">
+          <label class="form-check-label" for="qizheng">七政四余</label>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">行星</label>
+      <div class="col-4">
+        <select class="form-select" id="planet" [(ngModel)]="dice.planet" name="planet" [disabled]="isLocked">
+          @for (p of planetOptions; track p) {
+            <option [ngValue]="p.value">{{p.label}}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">星座</label>
+      <div class="col-4">
+        <select class="form-select" id="zodiac" [(ngModel)]="dice.zodiac" name="zodiac" [disabled]="isLocked">
+          @for (sign of zodiacSigns; track sign) {
+            <option [ngValue]="sign.value">{{sign.label}}</option>
+          }
+        </select>
+      </div>
+      <label class="col-2 col-form-label">宫位</label>
+      <div class="col-4">
+        <select class="form-select" id="house" [(ngModel)]="dice.house" name="house" [disabled]="isLocked">
+          @for (h of [1,2,3,4,5,6,7,8,9,10,11,12]; track h) {
+            <option [ngValue]="h">{{h}}宫</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">事项</label>
+      <div class="col-10">
+        <input type="text" class="form-control" id="matter" [(ngModel)]="dice.matter" name="matter" placeholder="投掷所问的事项" [disabled]="isLocked">
+      </div>
+    </div>
+    @if (isAdmin) {
+      <div class="row mb-3">
+        <label class="col-2 col-form-label">所属用户</label>
+        <div class="col-10">
+          <select class="form-select" [(ngModel)]="dice.user_id" name="user_id" [disabled]="isLocked">
+            @for (user of users; track user) {
+              <option [ngValue]="user.id">{{user.username}} ({{user.role}})</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 投掷时间 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">投掷时间</div>
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="input-group">
+          <input type="number" class="form-control" id="year" [(ngModel)]="dice.year" name="year" placeholder="年" min="1900" max="2100" [disabled]="isLocked">
+          <span class="input-group-text">年</span>
+          <input type="number" class="form-control" id="month" [(ngModel)]="dice.month" name="month" placeholder="月" min="1" max="12" [disabled]="isLocked">
+          <span class="input-group-text">月</span>
+          <input type="number" class="form-control" id="day" [(ngModel)]="dice.day" name="day" placeholder="日" min="1" max="31" [disabled]="isLocked">
+          <span class="input-group-text">日</span>
+        </div>
+        <div class="input-group mt-2">
+          <input type="number" class="form-control" id="hour" [(ngModel)]="dice.hour" name="hour" placeholder="时" min="0" max="23" [disabled]="isLocked">
+          <span class="input-group-text">时</span>
+          <input type="number" class="form-control" id="minute" [(ngModel)]="dice.minute" name="minute" placeholder="分" min="0" max="59" [disabled]="isLocked">
+          <span class="input-group-text">分</span>
+          <input type="number" class="form-control" id="second" [(ngModel)]="dice.second" name="second" placeholder="秒" min="0" max="59" [disabled]="isLocked">
+          <span class="input-group-text">秒</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-2 col-form-label">时区</label>
+      <div class="col-4">
+        <select class="form-select" id="timezone" [(ngModel)]="dice.time_zone_offset" name="timezone" [disabled]="isLocked">
+          @for (item of zones; track item) {
+            <option [ngValue]="item">
+              @switch (true) {
+                @case (item === 0) { 0时区 }
+                @case (item < 0) { 西{{-item}}区 }
+                @case (item > 0) { 东{{item}}区 }
+              }
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 描述 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">描述</div>
+    <div class="row">
+      <label for="description" class="col-2 col-form-label">描述</label>
+      <div class="col-10">
+        <textarea class="form-control" id="description" rows="2" [(ngModel)]="dice.description" name="description"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 锁定状态 -->
+  <div class="form-section mb-4">
+    <div class="section-title mb-3">锁定状态</div>
+    <div class="row">
+      <label class="col-2 col-form-label">锁定记录</label>
+      <div class="col-10 d-flex align-items-center">
+        <input type="checkbox" class="form-check-input me-2" id="lock" [(ngModel)]="dice.lock" name="lock">
+        <label class="form-check-label mb-0" for="lock">（锁定后只能修改描述和锁定状态）</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-primary px-5 me-2" (click)="save()" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        <span class="spinner-border spinner-border-sm"></span> 保存中...
+      } @else {
+        <span>保存</span>
+      }
+    </button>
+    <button class="btn btn-outline-secondary px-4" (click)="dismiss()" [disabled]="isSubmitting">取消</button>
+  </div>
+</div>

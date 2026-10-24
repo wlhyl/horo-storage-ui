@@ -17,6 +17,8 @@ import { PersonsComponent } from './persons/persons.component';
 import { PersonFormComponent } from './persons/person-form/person-form.component';
 import { TagsComponent } from './tags/tags.component';
 import { TagFormComponent } from './tags/tag-form/tag-form.component';
+import { DiceComponent } from './dice/dice.component';
+import { DiceFormComponent } from './dice/dice-form/dice-form.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { TagFormComponent } from './tags/tag-form/tag-form.component';
     PersonFormComponent,
     TagsComponent,
     TagFormComponent,
+    DiceComponent,
+    DiceFormComponent,
   ],
   imports: [
     CommonModule,

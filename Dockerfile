@@ -2,7 +2,8 @@ FROM node:24.18.0 as build
 WORKDIR /app
 COPY ./ /app/
 
-RUN npm install --registry https://registry.npm.taobao.org
+# RUN npm install --registry https://registry.npm.taobao.org
+RUN npm install
 #RUN npm run build
 RUN npx ng build --base-href /horo-admin --deploy-url /horo-admin/
 

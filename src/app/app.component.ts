@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     Historical: `${Path.Resource}/${ResourcePath.Historical}`,
     Person: `${Path.Resource}/${ResourcePath.Person}`,
     Tag: `${Path.Resource}/${ResourcePath.Tag}`,
+    Dice: `${Path.Resource}/${ResourcePath.Dice}`,
   };
 
   constructor(

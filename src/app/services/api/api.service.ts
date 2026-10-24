@@ -26,6 +26,11 @@ import {
   TagRequest,
   UpdateTagRequest,
 } from '../../interfaces/tag';
+import {
+  Dice,
+  DiceRequest,
+  UpdateDiceRequest,
+} from '../../interfaces/dice';
 
 @Injectable({
   providedIn: 'root',
@@ -262,5 +267,50 @@ export class ApiService {
     return this.http.delete<void>(`${this.url}/tags/${id}`, {
       headers: { ...this.http_options, token: this.user.token },
     });
+  }
+
+  // 获取骰子分页列表
+  getDices(
+    page: number,
+    size: number
+  ): Observable<PageResponser<Array<Dice>>> {
+    return this.http.get<PageResponser<Array<Dice>>>(
+      `${this.url}/dice?page=${page}&size=${size}`,
+      {
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
+  }
+
+  // 新增骰子记录
+  addDice(dice: DiceRequest): Observable<Dice> {
+    return this.http.post<Dice>(`${this.url}/dice`, dice, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 更新骰子记录
+  updateDice(id: number, dice: UpdateDiceRequest): Observable<void> {
+    return this.http.put<void>(`${this.url}/dice/${id}`, dice, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 删除骰子记录
+  deleteDice(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/dice/${id}`, {
+      headers: { ...this.http_options, token: this.user.token },
+    });
+  }
+
+  // 搜索骰子记录
+  searchDices(params: any): Observable<PageResponser<Array<Dice>>> {
+    return this.http.get<PageResponser<Array<Dice>>>(
+      `${this.url}/dice/search`,
+      {
+        params,
+        headers: { ...this.http_options, token: this.user.token },
+      }
+    );
   }
 }

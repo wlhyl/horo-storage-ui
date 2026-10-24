@@ -91,6 +91,11 @@ export class HistoricalComponent implements OnInit {
       })
       .add(() => {
         this.refreshing = false;
+        // 当前页被删空后自动回退到第一页
+        if (this.horoscopes.data.length === 0 && this.page > 0) {
+          this.page = 0;
+          this.getHoroscopes();
+        }
       });
   }
 
@@ -133,10 +138,23 @@ export class HistoricalComponent implements OnInit {
       })
       .add(() => {
         this.refreshing = false;
+        // 当前页被删空或记录不再匹配条件后自动回退到第一页
+        if (
+          this.horoscopes.data.length === 0 &&
+          this.searchParams.page > 0 &&
+          this.isSearchMode
+        ) {
+          this.searchParams.page = 0;
+          this.search();
+        }
       });
   }
 
   resetSearch() {
+    if (this.refreshing) {
+      return;
+    }
+
     this.searchParams = {
       page: 0,
       size: PAGE_SIZE,
@@ -157,13 +175,28 @@ export class HistoricalComponent implements OnInit {
     if (this.refreshing) {
       return;
     }
-    const horoscope = this.horoscopes.data.find((h) => h.id === id);
-    if (horoscope) {
-      this.openForm(structuredClone(horoscope));
+    if (this.modalService.hasOpenModals()) {
+      return;
     }
+    const horoscope = this.horoscopes.data.find((h) => h.id === id);
+    if (!horoscope) {
+      // 列表数据刚被刷新替换，点击的是旧记录
+      this.message.push({
+        kind: AlertKind.WARNING,
+        message: '记录不存在或已被更新，请刷新列表后重试！',
+      });
+      return;
+    }
+    this.openForm(structuredClone(horoscope));
   }
 
   delete(id: number) {
+    if (this.refreshing) {
+      return;
+    }
+    if (this.modalService.hasOpenModals()) {
+      return;
+    }
     const horoscope = this.horoscopes.data.find((h) => h.id === id);
     if (!horoscope) {
       this.message.push({
@@ -229,6 +262,9 @@ export class HistoricalComponent implements OnInit {
 
   showAddForm() {
     if (this.refreshing) {
+      return;
+    }
+    if (this.modalService.hasOpenModals()) {
       return;
     }
     const horoscope = structuredClone(DEFAULT_HISTORICAL_HOROSCOPE);

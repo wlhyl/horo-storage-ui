@@ -5,6 +5,7 @@ import {
   HouseCusp,
   PlanetPosition,
 } from '../interfaces/historical-horoscope';
+import { Dice } from '../interfaces/dice';
 import { ChartType } from '../enum/chart-type';
 
 export const DEFAULT_LOCATION: Location = {
@@ -75,6 +76,34 @@ export const PLANET_NAMES = [
   { value: 'PartOfFortune', label: '福点' },
 ];
 
+// 骰子可用的西洋行星（传统七行星与南北交点），存储 API 枚举名
+export const DICE_PLANETS = [
+  { value: 'Sun', label: '太阳' },
+  { value: 'Moon', label: '月亮' },
+  { value: 'Mercury', label: '水星' },
+  { value: 'Venus', label: '金星' },
+  { value: 'Mars', label: '火星' },
+  { value: 'Jupiter', label: '木星' },
+  { value: 'Saturn', label: '土星' },
+  { value: 'NorthNode', label: '北交点' },
+  { value: 'SouthNode', label: '南交点' },
+];
+
+// 骰子可用的七政四余十一曜，存储单字
+export const QIZHENG_DICE_PLANETS = [
+  { value: '日', label: '太阳' },
+  { value: '月', label: '月亮' },
+  { value: '水', label: '水星' },
+  { value: '金', label: '金星' },
+  { value: '火', label: '火星' },
+  { value: '木', label: '木星' },
+  { value: '土', label: '土星' },
+  { value: '计', label: '计都' },
+  { value: '罗', label: '罗喉' },
+  { value: '孛', label: '月孛' },
+  { value: '气', label: '紫气' },
+];
+
 const DEFAULT_HOUSE_CUSPS: HouseCusp[] = Array.from({ length: 12 }, (_, i) => ({
   house_number: i + 1,
   longitude_degree: 0,
@@ -113,6 +142,27 @@ export const DEFAULT_HISTORICAL_HOROSCOPE: HistoricalHoroscope = {
   house_system: null,
   house_cusps: structuredClone(DEFAULT_HOUSE_CUSPS),
   planet_positions: [structuredClone(DEFAULT_PLANET_POSITION)],
+  created_at: '',
+  updated_at: null,
+  lock: false,
+  user_id: 0,
+};
+
+export const DEFAULT_DICE: Dice = {
+  id: 0,
+  year: 0,
+  month: 1,
+  day: 1,
+  hour: 0,
+  minute: 0,
+  second: 0,
+  time_zone_offset: 0,
+  planet: 'Sun',
+  zodiac: 0,
+  house: 1,
+  is_qizheng: false,
+  matter: '',
+  description: '',
   created_at: '',
   updated_at: null,
   lock: false,

@@ -5,4 +5,5 @@ export enum Path {
   Historical = 'historical',
   Person = 'persons',
   Tag = 'tags',
+  Dice = 'dice',
 }

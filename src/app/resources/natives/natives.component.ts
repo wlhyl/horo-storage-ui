@@ -13,6 +13,7 @@ import { ChartType } from '../../enum/chart-type';
 import { DEFAULT_NATIVE, PAGE_SIZE } from '../../utils/constant';
 import { buildSearchParams } from '../../utils/search';
 import { getApiErrorMessage } from '../../utils/api-error/api-error';
+import { nowDateTime } from '../../utils/now/now';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NativeFormComponent } from './native-form/native-form.component';
 import { ConfirmModalComponent } from '../../common/confirm/confirm-modal.component';
@@ -291,41 +292,20 @@ export class NativesComponent implements OnInit {
     if (this.modalService.hasOpenModals()) {
       return;
     }
+    // 新增时默认使用当前时间，时区取浏览器时区
+    const t = nowDateTime();
     const native = {
       ...DEFAULT_NATIVE,
-      ...this.nowDate(),
+      birth_year: t.year,
+      birth_month: t.month,
+      birth_day: t.day,
+      birth_hour: t.hour,
+      birth_minute: t.minute,
+      birth_second: t.second,
+      time_zone_offset: t.time_zone_offset,
+      is_dst: t.is_dst,
     };
     this.openNativeForm(native);
-  }
-
-  private nowDate() {
-    const t = new Date();
-    const birth_year = t.getFullYear();
-    const birth_month = t.getMonth() + 1;
-    const birth_day = t.getDate();
-    const birth_hour = t.getHours();
-    const birth_minute = t.getMinutes();
-    const birth_second = t.getSeconds();
-
-    let is_dst = false;
-    // 判断夏令时
-    let d1 = new Date(birth_year, 1, 1); // 2月1日
-    let time_zone_offset = d1.getTimezoneOffset() / -60;
-    // let d2 = new Date(this.horo.year,7,1);
-    if (t.getTimezoneOffset() != d1.getTimezoneOffset()) {
-      is_dst = true;
-      time_zone_offset -= 1;
-    }
-    return {
-      birth_year,
-      birth_month,
-      birth_day,
-      birth_hour,
-      birth_minute,
-      birth_second,
-      time_zone_offset,
-      is_dst,
-    };
   }
 
   private openNativeForm(native: Horoscope) {

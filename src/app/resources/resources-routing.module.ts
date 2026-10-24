@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { HistoricalComponent } from './historical/historical.component';
 import { PersonsComponent } from './persons/persons.component';
 import { TagsComponent } from './tags/tags.component';
+import { DiceComponent } from './dice/dice.component';
 
 const routes: Routes = [
   { path: Path.Home, component: HomeComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: Path.Historical, component: HistoricalComponent },
   { path: Path.Person, component: PersonsComponent },
   { path: Path.Tag, component: TagsComponent },
+  { path: Path.Dice, component: DiceComponent },
   { path: '**', redirectTo: Path.Home },
 ];
 
