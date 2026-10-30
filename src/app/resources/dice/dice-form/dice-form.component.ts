@@ -30,6 +30,7 @@ export class DiceFormComponent implements OnInit {
   users: User[] = [];
   isAdmin = false;
   isSubmitting = false;
+  private originalDice?: Dice;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -38,6 +39,9 @@ export class DiceFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.dice.id > 0) {
+      this.originalDice = structuredClone(this.dice);
+    }
     this.checkAdmin();
     if (this.isAdmin) {
       this.getUsers();
@@ -64,7 +68,9 @@ export class DiceFormComponent implements OnInit {
   }
 
   get isLocked(): boolean {
-    return this.dice.id > 0 && this.dice.lock;
+    // 以打开表单时的锁定状态为准：锁定记录取消勾选后其余字段仍保持禁用，
+    // 保存时仅提交描述与锁定状态，避免后端拒绝导致无法解锁
+    return this.originalDice?.lock ?? false;
   }
 
   // 当前体系可选的行星（占星/七政四余）

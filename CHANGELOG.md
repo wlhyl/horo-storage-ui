@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.1] 2026-10-31
+
+### Fixed
+
+- 占星骰子：修复已锁定记录无法解除锁定的问题（取消勾选锁定后保存时误提交全部字段被后端拒绝，现以打开表单时的锁定状态为准，仅提交描述与锁定状态）
+
 ## [0.18.0] 2026-10-24
 
 ### Added
